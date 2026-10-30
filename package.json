@@ -1,0 +1,15 @@
+{
+  "name": "petrusic-gradnja",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix front/my-app ci && npm --prefix back/petrusic ci",
+    "dev:web": "npm --prefix front/my-app run dev",
+    "dev:studio": "npm --prefix back/petrusic run dev",
+    "build:web": "npm --prefix front/my-app run build",
+    "build:studio": "npm --prefix back/petrusic run build",
+    "lint:web": "npm --prefix front/my-app run lint",
+    "typecheck:web": "npm --prefix front/my-app run typecheck",
+    "typecheck:studio": "npm --prefix back/petrusic run typecheck",
+    "deploy:studio": "npm --prefix back/petrusic run deploy"
+  }
+}
