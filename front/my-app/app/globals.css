@@ -1176,6 +1176,17 @@ button {
   }
 }
 
+@media (max-width: 680px) {
+  .reference-step[data-active="true"] {
+    height: 300px;
+  }
+
+  .reference-step:hover .reference-step__image,
+  .reference-step[data-active="true"] .reference-step__image {
+    transform: scale(1.02);
+  }
+}
+
 .info-section {
   background: rgb(255 255 255 / 2%);
 }
