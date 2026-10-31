@@ -43,7 +43,8 @@ export default function Hero({
         src={backgroundImage.src}
         alt={backgroundImage.alt ?? ""}
         fill
-        priority
+        loading="eager"
+        fetchPriority="high"
         sizes="100vw"
         className="hero__image"
         style={

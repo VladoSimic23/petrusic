@@ -96,7 +96,7 @@ export default function SiteHeader() {
               </Link>
             </li>
             <li>
-              <Link href="/#o-nama" onClick={closeMenu}>
+              <Link href="/o-nama" onClick={closeMenu}>
                 O nama
               </Link>
             </li>

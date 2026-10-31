@@ -1,10 +1,29 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent,
+  type TouchEvent,
+} from "react";
 import type { ProjectImage } from "../../sanity/lib/projects";
 
 type GalleryImage = ProjectImage & { _key: string };
+
+const SHAPES = ["wide", "tall", "wide", "wide", "tall"] as const;
+
+function pad(value: number) {
+  return String(value).padStart(2, "0");
+}
+
+function focalPoint(image: GalleryImage): CSSProperties | undefined {
+  return image.hotspot
+    ? { objectPosition: `${image.hotspot.x * 100}% ${image.hotspot.y * 100}%` }
+    : undefined;
+}
 
 export default function ProjectGallery({
   images,
@@ -13,130 +32,278 @@ export default function ProjectGallery({
   images: GalleryImage[];
   title: string;
 }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  const activeImage = images[activeIndex];
+  const railRef = useRef<HTMLUListElement>(null);
+  const thumbRef = useRef<HTMLSpanElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const dragRef = useRef({ active: false, moved: false, startX: 0, startLeft: 0 });
+  const swipeRef = useRef<number | null>(null);
+
+  const [railIndex, setRailIndex] = useState(0);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+  const [scrollable, setScrollable] = useState(true);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  const count = images.length;
+  const isOpen = lightboxIndex !== null;
+  const activeImage = lightboxIndex !== null ? images[lightboxIndex] : undefined;
 
   useEffect(() => {
-    if (!isLightboxOpen) return;
+    const rail = railRef.current;
+    if (!rail) return;
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const max = rail.scrollWidth - rail.clientWidth;
+      const progress = max > 0 ? Math.min(1, Math.max(0, rail.scrollLeft / max)) : 0;
+      const visible = rail.scrollWidth > 0 ? Math.min(1, rail.clientWidth / rail.scrollWidth) : 1;
+
+      const thumb = thumbRef.current;
+      if (thumb) {
+        thumb.style.width = `${visible * 100}%`;
+        thumb.style.transform = `translateX(${progress * (1 / visible - 1) * 100}%)`;
+      }
+
+      setScrollable(max > 8);
+      setAtStart(rail.scrollLeft <= 2);
+      setAtEnd(rail.scrollLeft >= max - 2);
+      setRailIndex(Math.round(progress * (count - 1)));
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    const observer = new ResizeObserver(schedule);
+    observer.observe(rail);
+    rail.addEventListener("scroll", schedule, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      rail.removeEventListener("scroll", schedule);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [count]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    document.body.style.overflow = "hidden";
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsLightboxOpen(false);
+      if (event.key === "Escape") setLightboxIndex(null);
       if (event.key === "ArrowRight") {
-        setActiveIndex((index) => (index + 1) % images.length);
+        setLightboxIndex((index) => (index === null ? index : (index + 1) % count));
       }
       if (event.key === "ArrowLeft") {
-        setActiveIndex((index) => (index - 1 + images.length) % images.length);
+        setLightboxIndex((index) =>
+          index === null ? index : (index - 1 + count) % count,
+        );
       }
     };
 
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [images.length, isLightboxOpen]);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = "";
+      previouslyFocused?.focus?.();
+    };
+  }, [count, isOpen]);
 
-  if (!activeImage) return null;
+  if (!count) return null;
 
-  const renderImage = (image: GalleryImage, priority = false) => (
-    <Image
-      src={image.src}
-      alt={image.alt || title}
-      fill
-      priority={priority}
-      sizes="(max-width: 760px) 100vw, 1200px"
-      style={
-        image.hotspot
-          ? {
-              objectPosition: `${image.hotspot.x * 100}% ${image.hotspot.y * 100}%`,
-            }
-          : undefined
+  const scrollByPage = (direction: 1 | -1) => {
+    const rail = railRef.current;
+    rail?.scrollBy({ left: direction * rail.clientWidth * 0.7, behavior: "smooth" });
+  };
+
+  // Povlačenje mišem; dodir i trackpad već rade nativno.
+  const onPointerDown = (event: PointerEvent<HTMLUListElement>) => {
+    const rail = railRef.current;
+    if (!rail || event.pointerType !== "mouse" || event.button !== 0) return;
+
+    dragRef.current = {
+      active: true,
+      moved: false,
+      startX: event.clientX,
+      startLeft: rail.scrollLeft,
+    };
+
+    const onMove = (moveEvent: globalThis.PointerEvent) => {
+      const drag = dragRef.current;
+      if (!drag.active) return;
+      const delta = moveEvent.clientX - drag.startX;
+      if (!drag.moved && Math.abs(delta) > 6) {
+        drag.moved = true;
+        rail.dataset.dragging = "true";
       }
-    />
-  );
+      if (drag.moved) rail.scrollLeft = drag.startLeft - delta;
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      delete rail.dataset.dragging;
+      dragRef.current.active = false;
+      // Klik se šalje odmah nakon pointerup pa ga tek tada smijemo ponovno omogućiti.
+      setTimeout(() => {
+        dragRef.current.moved = false;
+      }, 0);
+    };
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+  };
+
+  const step = (direction: 1 | -1) =>
+    setLightboxIndex((index) =>
+      index === null ? index : (index + direction + count) % count,
+    );
+
+  const onTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    swipeRef.current = event.touches[0]?.clientX ?? null;
+  };
+  const onTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    const start = swipeRef.current;
+    const end = event.changedTouches[0]?.clientX;
+    swipeRef.current = null;
+    if (start == null || end == null || count < 2) return;
+    if (Math.abs(end - start) > 50) step(end < start ? 1 : -1);
+  };
 
   return (
-    <>
-      <div className="project-gallery">
-        <button
-          type="button"
-          className="project-gallery__main"
-          onClick={() => setIsLightboxOpen(true)}
-          aria-label={`Otvori fotografiju ${activeIndex + 1} od ${images.length}`}
-        >
-          {renderImage(activeImage, true)}
-          <span className="project-gallery__expand" aria-hidden="true">
-            ⤢
-          </span>
-        <span
-          className="project-gallery__counter"
-          aria-label={`Fotografija ${activeIndex + 1} od ${images.length}`}
-        >
-          {activeIndex + 1}/{images.length}
-          </span>
-        </button>
-
-        {images.length > 1 ? (
-          <div className="project-gallery__thumbnails" aria-label="Fotografije">
-            {images.slice(0, 4).map((image, index) => (
+    <section className="project-gallery" id="galerija" aria-label="Galerija fotografija">
+      <div className="section-heading project-detail__wrap project-gallery__head">
+        <div>
+          <p className="eyebrow eyebrow--dark">Galerija</p>
+          <h2>Pogledajte izbliza</h2>
+        </div>
+        {scrollable ? (
+          <div className="project-gallery__controls">
+            <span className="project-gallery__position">
+              <strong>{pad(railIndex + 1)}</strong> / {pad(count)}
+            </span>
+            <div className="project-gallery__nav">
               <button
                 type="button"
-                className="project-gallery__thumbnail"
-                data-active={index === activeIndex}
-                key={image._key}
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Prikaži fotografiju ${index + 1}`}
-                aria-pressed={index === activeIndex}
+                onClick={() => scrollByPage(-1)}
+                disabled={atStart}
+                aria-label="Prethodne fotografije"
               >
-                {renderImage(image)}
+                ←
               </button>
-            ))}
+              <button
+                type="button"
+                onClick={() => scrollByPage(1)}
+                disabled={atEnd}
+                aria-label="Sljedeće fotografije"
+              >
+                →
+              </button>
+            </div>
           </div>
         ) : null}
       </div>
 
-      {isLightboxOpen ? (
+      <ul
+        ref={railRef}
+        className="project-gallery__rail"
+        role="list"
+        aria-label="Fotografije projekta"
+        onPointerDown={onPointerDown}
+      >
+        {images.map((image, index) => (
+          <li
+            className="project-gallery__item"
+            data-shape={SHAPES[index % SHAPES.length]}
+            key={image._key}
+          >
+            <button
+              type="button"
+              className="project-gallery__card"
+              onClick={() => {
+                if (!dragRef.current.moved) setLightboxIndex(index);
+              }}
+              aria-label={`Otvori fotografiju ${index + 1} od ${count}`}
+            >
+              <Image
+                src={image.src}
+                alt={image.alt || title}
+                fill
+                sizes="(max-width: 680px) 84vw, 740px"
+                draggable={false}
+                style={focalPoint(image)}
+              />
+              <span className="project-gallery__index" aria-hidden="true">
+                {pad(index + 1)}
+              </span>
+              <span className="project-gallery__expand" aria-hidden="true">
+                ⤢
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {scrollable ? (
+        <div className="project-gallery__progress" aria-hidden="true">
+          <span ref={thumbRef} />
+        </div>
+      ) : null}
+
+      {activeImage && lightboxIndex !== null ? (
         <div
           className="project-lightbox"
           role="dialog"
           aria-modal="true"
           aria-label={`${title} — galerija slika`}
           onClick={(event) => {
-            if (event.target === event.currentTarget) setIsLightboxOpen(false);
+            if (event.target === event.currentTarget) setLightboxIndex(null);
           }}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
         >
           <button
+            ref={closeRef}
             type="button"
             className="project-lightbox__close"
-            onClick={() => setIsLightboxOpen(false)}
+            onClick={() => setLightboxIndex(null)}
             aria-label="Zatvori galeriju"
           >
             <span aria-hidden="true">×</span>
           </button>
-          {images.length > 1 ? (
+          {count > 1 ? (
             <button
               type="button"
               className="project-lightbox__arrow project-lightbox__arrow--previous"
-              onClick={() =>
-                setActiveIndex((index) => (index - 1 + images.length) % images.length)
-              }
+              onClick={() => step(-1)}
               aria-label="Prethodna fotografija"
             >
               ←
             </button>
           ) : null}
-          <div className="project-lightbox__image">
-            {renderImage(activeImage)}
+          <div className="project-lightbox__image" key={activeImage._key}>
+            <Image
+              src={activeImage.src}
+              alt={activeImage.alt || title}
+              fill
+              sizes="(max-width: 760px) 100vw, 1200px"
+            />
           </div>
           <span
             className="project-gallery__counter project-lightbox__counter"
-            aria-label={`Fotografija ${activeIndex + 1} od ${images.length}`}
+            aria-label={`Fotografija ${lightboxIndex + 1} od ${count}`}
           >
-            {activeIndex + 1}/{images.length}
+            {lightboxIndex + 1}/{count}
           </span>
-          {images.length > 1 ? (
+          {count > 1 ? (
             <button
               type="button"
               className="project-lightbox__arrow project-lightbox__arrow--next"
-              onClick={() => setActiveIndex((index) => (index + 1) % images.length)}
+              onClick={() => step(1)}
               aria-label="Sljedeća fotografija"
             >
               →
@@ -147,6 +314,6 @@ export default function ProjectGallery({
           ) : null}
         </div>
       ) : null}
-    </>
+    </section>
   );
 }

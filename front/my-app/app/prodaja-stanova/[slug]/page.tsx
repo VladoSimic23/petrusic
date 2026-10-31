@@ -6,8 +6,11 @@ import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 import type { PortableTextComponents } from "@portabletext/react";
 import ProjectGallery from "../../components/project-gallery";
+import SaleProjectCard from "../../components/sale-project-card";
 import SiteHeader from "../../components/site-header";
+import { messagingNumber, phoneHref } from "../../components/contact-section";
 import type { ProjectBodyImage } from "../../../sanity/lib/projects";
+import { getHomePage } from "../../../sanity/lib/home";
 import {
   getProjectBySlug,
   getProjectsForSale,
@@ -22,7 +25,9 @@ export async function generateStaticParams() {
   return projects.map(({ slug }) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project) return { title: "Projekt nije pronađen | Petrušić gradnja" };
@@ -101,7 +106,10 @@ export default function ProjectDetailPage({ params }: PageProps) {
       <Suspense
         fallback={
           <main className="project-detail">
-            <div className="project-detail__loading" aria-label="Učitavanje projekta" />
+            <div
+              className="project-detail__loading"
+              aria-label="Učitavanje projekta"
+            />
           </main>
         }
       >
@@ -113,7 +121,11 @@ export default function ProjectDetailPage({ params }: PageProps) {
 
 async function ProjectDetailContent({ params }: PageProps) {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const [project, allProjects, home] = await Promise.all([
+    getProjectBySlug(slug),
+    getProjectsForSale(),
+    getHomePage(),
+  ]);
   if (!project) notFound();
 
   const gallery = [
@@ -125,50 +137,92 @@ async function ProjectDetailContent({ params }: PageProps) {
         _key: image._key || `${project._id}-gallery-${index}`,
       })),
   ];
+  const otherProjects = allProjects
+    .filter((item) => item.slug !== project.slug)
+    .slice(0, 2);
+  const { hotspot } = project.image;
+  const contact = home?.contact;
 
   return (
     <main className="project-detail">
-      <div className="project-detail__topbar">
-        <Link href="/prodaja-stanova">
-          <span aria-hidden="true">←</span> Svi projekti
-        </Link>
-        <span>Stanovi u prodaji</span>
-      </div>
-
-      <section className="project-detail__hero">
-        <div className="project-detail__hero-image">
-          <ProjectGallery images={gallery} title={project.title} />
-          <div className="project-detail__hero-overlay">
-            <p className="eyebrow">Petrušić gradnja</p>
-            <h1>{project.title}</h1>
+      <section className="project-detail__hero" aria-labelledby="project-title">
+        <div className="project-detail__hero-media">
+          <Image
+            src={project.image.src}
+            alt={project.image.alt || project.title}
+            fill
+            loading="eager"
+            fetchPriority="high"
+            sizes="100vw"
+            style={
+              hotspot
+                ? { objectPosition: `${hotspot.x * 100}% ${hotspot.y * 100}%` }
+                : undefined
+            }
+          />
+        </div>
+        <div className="project-detail__wrap project-detail__hero-inner">
+          <Link className="project-detail__back" href="/prodaja-stanova">
+            <span aria-hidden="true">←</span> Svi projekti
+          </Link>
+          <div className="project-detail__hero-copy">
+            <p className="eyebrow">Petrušić gradnja · Stanovi u prodaji</p>
+            <h1 id="project-title">{project.title}</h1>
             <p className="project-detail__lead">
               Promišljena arhitektura, kvalitetna izvedba i prostor oblikovan za
               svakodnevni život.
             </p>
-          </div>
-        </div>
-        {project.completion ? (
-          <div className="project-detail__hero-footer">
-            <div className="project-detail__facts">
-              <div>
-                <span>Planirani završetak</span>
-                <strong>{project.completion}</strong>
-              </div>
+            <div className="project-detail__actions">
+              <Link className="button button--primary" href="/#kontakt">
+                Zatražite informacije <span aria-hidden="true">↗</span>
+              </Link>
+              {gallery.length > 1 ? (
+                <a className="project-detail__ghost" href="#galerija">
+                  Pogledaj galeriju <span aria-hidden="true">↓</span>
+                </a>
+              ) : null}
             </div>
           </div>
-        ) : null}
+        </div>
       </section>
+
+      <div className="project-detail__wrap">
+        <dl className="project-detail__facts">
+          <div>
+            <dt>Lokacija</dt>
+            <dd>{project.location}</dd>
+          </div>
+          {project.completion ? (
+            <div>
+              <dt>Planirani završetak</dt>
+              <dd>{project.completion}</dd>
+            </div>
+          ) : null}
+          <div>
+            <dt>Fotografije</dt>
+            <dd>{gallery.length}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>Aktualno u ponudi</dd>
+          </div>
+        </dl>
+      </div>
+
+      {gallery.length > 1 ? (
+        <ProjectGallery images={gallery} title={project.title} />
+      ) : null}
 
       {project.body.length ? (
         <section
-          className="project-detail__story"
+          className="project-detail__story project-detail__wrap"
           id="opis-projekta"
           aria-label="O projektu"
         >
-          <div className="project-detail__story-label">
+          {/* <div className="project-detail__story-label">
             <p className="eyebrow eyebrow--dark">Pažnja u svakom detalju</p>
             <h2>Prostor za vaš novi početak</h2>
-          </div>
+          </div> */}
           <div className="project-body">
             <PortableText
               value={project.body}
@@ -178,16 +232,66 @@ async function ProjectDetailContent({ params }: PageProps) {
         </section>
       ) : null}
 
-      <section className="project-detail__contact">
-        <p className="eyebrow">Sljedeći korak</p>
-        <h2>Pronašli ste svoj novi dom?</h2>
-        <p>
-          Naš tim rado će vam odgovoriti na pitanja i dogovoriti razgledavanje.
-        </p>
-        <Link className="button button--primary" href="/#kontakt">
-          Zatražite informacije <span aria-hidden="true">↗</span>
-        </Link>
-      </section>
+      <div className="project-detail__wrap">
+        <section
+          className="project-detail__contact"
+          aria-labelledby="project-contact-title"
+        >
+          <div className="project-detail__contact-copy">
+            <p className="eyebrow">Sljedeći korak</p>
+            <h2 id="project-contact-title">Pronašli ste svoj novi dom?</h2>
+            <p>
+              Naš tim rado će vam odgovoriti na pitanja i dogovoriti
+              razgledavanje.
+            </p>
+          </div>
+          <div className="project-detail__contact-actions">
+            <Link className="button button--primary" href="/#kontakt">
+              Zatražite informacije <span aria-hidden="true">↗</span>
+            </Link>
+            {contact?.phone ? (
+              <a
+                className="project-detail__ghost"
+                href={phoneHref(contact.phone)}
+              >
+                {contact.phone}
+              </a>
+            ) : null}
+            {contact?.whatsapp ? (
+              <a
+                className="project-detail__ghost"
+                href={`https://wa.me/${messagingNumber(contact.whatsapp)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                WhatsApp <span aria-hidden="true">↗</span>
+              </a>
+            ) : null}
+          </div>
+        </section>
+      </div>
+
+      {otherProjects.length ? (
+        <section
+          className="project-detail__more project-detail__wrap"
+          aria-labelledby="more-projects-title"
+        >
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow eyebrow--dark">Istražite još</p>
+              <h2 id="more-projects-title">Ostali projekti</h2>
+            </div>
+            <Link className="project-detail__all" href="/prodaja-stanova">
+              Svi projekti <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+          <ul className="sale-project-grid">
+            {otherProjects.map((item, index) => (
+              <SaleProjectCard key={item._id} project={item} index={index} />
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </main>
   );
 }

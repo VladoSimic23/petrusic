@@ -14,11 +14,11 @@ export type ContactContent = {
   responseNote?: string;
 };
 
-function phoneHref(value: string) {
+export function phoneHref(value: string) {
   return `tel:${value.replace(/[^\d+]/g, "")}`;
 }
 
-function messagingNumber(value: string) {
+export function messagingNumber(value: string) {
   const digits = value.replace(/\D/g, "");
   return digits.startsWith("00") ? digits.slice(2) : digits;
 }
@@ -198,10 +198,6 @@ export default function ContactSection({
           </div>
         </div>
       ) : null}
-      <div className="contact-section__footer">
-        <span>Gradimo povjerenje. Razgovorom započinje svaki dobar projekt.</span>
-        <span>Petrušić gradnja <span aria-hidden="true">©</span></span>
-      </div>
     </section>
   );
 }
