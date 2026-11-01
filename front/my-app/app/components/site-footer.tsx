@@ -1,4 +1,3 @@
-import { cacheLife, cacheTag } from "next/cache";
 import Link from "next/link";
 import { getFooterContact } from "../../sanity/lib/footer";
 import { messagingNumber, phoneHref } from "./contact-section";
@@ -12,10 +11,6 @@ const links = [
 ];
 
 export default async function SiteFooter() {
-  "use cache";
-  cacheLife("days");
-  cacheTag("sanity", "homePage");
-
   const contact = await getFooterContact();
   const year = new Date().getFullYear();
 
