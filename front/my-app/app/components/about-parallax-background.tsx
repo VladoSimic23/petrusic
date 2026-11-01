@@ -14,6 +14,10 @@ export default function AboutParallaxBackground({
   const backgroundPosition = hotspot
     ? `${hotspot.x * 100}% ${hotspot.y * 100}%`
     : "center";
+  const backgroundUrl =
+    src.startsWith("https://cdn.sanity.io/") && !src.includes("auto=")
+      ? `${src}${src.includes("?") ? "&" : "?"}auto=format`
+      : src;
 
   return (
     <>
@@ -24,7 +28,7 @@ export default function AboutParallaxBackground({
           aria-label={alt}
           aria-hidden={alt ? undefined : true}
           style={{
-            backgroundImage: `url("${src}")`,
+            backgroundImage: `url("${backgroundUrl}")`,
             backgroundPosition,
           }}
         />
