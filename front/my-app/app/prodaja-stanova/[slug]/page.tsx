@@ -4,12 +4,11 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
-import type { PortableTextComponents } from "@portabletext/react";
 import ProjectGallery from "../../components/project-gallery";
+import { portableComponents } from "../../components/project-body";
 import SaleProjectCard from "../../components/sale-project-card";
 import SiteHeader from "../../components/site-header";
 import { messagingNumber, phoneHref } from "../../components/contact-section";
-import type { ProjectBodyImage } from "../../../sanity/lib/projects";
 import { getHomePage } from "../../../sanity/lib/home";
 import {
   getProjectBySlug,
@@ -46,58 +45,6 @@ export async function generateMetadata({
       : {}),
   };
 }
-
-function isProjectBodyImage(value: unknown): value is ProjectBodyImage {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "_type" in value &&
-    value._type === "image" &&
-    "src" in value &&
-    typeof value.src === "string"
-  );
-}
-
-const portableComponents: PortableTextComponents = {
-  block: {
-    h2: ({ children }) => <h2>{children}</h2>,
-    h3: ({ children }) => <h3>{children}</h3>,
-    blockquote: ({ children }) => <blockquote>{children}</blockquote>,
-  },
-  marks: {
-    link: ({ children, value }) => {
-      const href =
-        value && "href" in value && typeof value.href === "string"
-          ? value.href
-          : undefined;
-      if (!href) return <>{children}</>;
-
-      const external = /^https?:\/\//i.test(href);
-      return (
-        <a href={href} rel={external ? "noopener noreferrer" : undefined}>
-          {children}
-        </a>
-      );
-    },
-  },
-  types: {
-    image: ({ value }) => {
-      if (!isProjectBodyImage(value)) return null;
-      return (
-        <figure className="project-body__image">
-          <Image
-            src={value.src}
-            alt={value.alt || ""}
-            width={1400}
-            height={900}
-            sizes="(max-width: 900px) 100vw, 900px"
-          />
-          {value.caption ? <figcaption>{value.caption}</figcaption> : null}
-        </figure>
-      );
-    },
-  },
-};
 
 export default function ProjectDetailPage({ params }: PageProps) {
   return (

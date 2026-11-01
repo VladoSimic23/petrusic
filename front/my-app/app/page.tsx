@@ -8,7 +8,6 @@ import ProjectsSection from "./components/projects-section";
 import ReferencesSection from "./components/references-section";
 import SectionDock from "./components/section-dock";
 import SiteHeader from "./components/site-header";
-import StatsSection from "./components/stats-section";
 import {
   aboutContent,
   contactContent,
@@ -41,12 +40,15 @@ export default async function Page() {
       <SiteHeader />
       <main>
         <Hero {...(page?.hero ?? heroContent)} />
-        <StatsSection {...(page?.stats ?? statsContent)} />
-        <AboutSection {...(page?.about ?? aboutContent)} />
         <ProjectsSection {...(page?.projects ?? projectsContent)} />
+        <AboutSection
+          {...(page?.about ?? aboutContent)}
+          stats={page?.stats ?? statsContent}
+        />
         <ReferencesSection {...references} />
         {infoSections.map((section, index) =>
-          section.id === "novosti" || (section.id === "arhiva" && references) ? null : (
+          section.id === "novosti" ||
+          (section.id === "arhiva" && references) ? null : (
             <InfoSection
               key={section.id}
               muted={index % 2 === 1}

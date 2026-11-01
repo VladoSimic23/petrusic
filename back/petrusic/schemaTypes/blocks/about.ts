@@ -29,6 +29,27 @@ export const about = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'image',
+      title: 'Slika sekcije',
+      description:
+        'Široka panoramska slika (npr. gradilište ili zgrada u izgradnji). Preporuka: horizontalna, min. 2000 px širine.',
+      type: 'image',
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alternativni tekst',
+          type: 'string',
+        }),
+        defineField({
+          name: 'caption',
+          title: 'Natpis na slici',
+          description: 'Kratki natpis u kutu slike, npr. „Gradilište Grude, 2026.”',
+          type: 'string',
+        }),
+      ],
+    }),
+    defineField({
       name: 'cta',
       title: 'Poveznica na stranicu O nama',
       type: 'callToAction',

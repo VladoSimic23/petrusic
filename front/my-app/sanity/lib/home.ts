@@ -120,6 +120,12 @@ function mapAbout(
         eyebrow: string | null;
         title: string | null;
         description: string | null;
+        image: {
+          src: string | null;
+          alt: string | null;
+          caption: string | null;
+          hotspot: { x: number | null; y: number | null } | null;
+        } | null;
         cta: { label: string | null; href: string | null } | null;
       }
     | null
@@ -133,6 +139,17 @@ function mapAbout(
     eyebrow: block.eyebrow ?? undefined,
     title: block.title,
     description: block.description,
+    image: block.image?.src
+      ? {
+          src: block.image.src,
+          alt: block.image.alt ?? undefined,
+          caption: block.image.caption ?? undefined,
+          hotspot:
+            block.image.hotspot?.x != null && block.image.hotspot.y != null
+              ? { x: block.image.hotspot.x, y: block.image.hotspot.y }
+              : undefined,
+        }
+      : undefined,
     cta: { label: block.cta.label, href: block.cta.href },
   };
 }

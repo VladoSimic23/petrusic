@@ -1,12 +1,12 @@
 import { cacheLife, cacheTag } from "next/cache";
 import Link from "next/link";
-import { getHomePage } from "../../sanity/lib/home";
+import { getFooterContact } from "../../sanity/lib/footer";
 import { messagingNumber, phoneHref } from "./contact-section";
 
 const links = [
   { label: "Naslovna", href: "/#naslovna" },
   { label: "Stanovi u prodaji", href: "/prodaja-stanova" },
-  { label: "Izgrađeni objekti", href: "/#arhiva" },
+  { label: "Izgrađeni objekti", href: "/izgradeni-objekti" },
   { label: "O nama", href: "/o-nama" },
   { label: "Kontakt", href: "/#kontakt" },
 ];
@@ -16,7 +16,7 @@ export default async function SiteFooter() {
   cacheLife("days");
   cacheTag("sanity", "homePage");
 
-  const contact = (await getHomePage())?.contact;
+  const contact = await getFooterContact();
   const year = new Date().getFullYear();
 
   const details = [

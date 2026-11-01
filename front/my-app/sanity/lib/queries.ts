@@ -70,6 +70,12 @@ export const HOME_PAGE_QUERY = defineQuery(`*[_id == "homePage"][0]{
     eyebrow,
     title,
     description,
+    "image": image{
+      "src": asset->url,
+      "alt": alt,
+      "caption": caption,
+      "hotspot": hotspot{x, y}
+    },
     cta{label, href}
   },
   "faq": sections[_type == "faq"][0]{

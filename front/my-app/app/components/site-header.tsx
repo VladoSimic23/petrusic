@@ -91,7 +91,7 @@ export default function SiteHeader() {
               </ul>
             </li>
             <li>
-              <Link href="/#arhiva" onClick={closeMenu}>
+              <Link href="/izgradeni-objekti" onClick={closeMenu}>
                 Izgrađeni objekti
               </Link>
             </li>
