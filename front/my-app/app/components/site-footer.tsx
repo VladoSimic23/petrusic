@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getFooterContact } from "../../sanity/lib/footer";
 import { messagingNumber, phoneHref } from "./contact-section";
 
+const currentYear = new Date().getFullYear();
+
 const links = [
   { label: "Naslovna", href: "/#naslovna" },
   { label: "Stanovi u prodaji", href: "/prodaja-stanova" },
@@ -12,7 +14,6 @@ const links = [
 
 export default async function SiteFooter() {
   const contact = await getFooterContact();
-  const year = new Date().getFullYear();
 
   const details = [
     contact?.email
@@ -95,7 +96,7 @@ export default async function SiteFooter() {
       </div>
 
       <div className="site-footer__bar">
-        <span>© {year} Petrušić gradnja. Sva prava pridržana.</span>
+        <span>© {currentYear} Petrušić gradnja. Sva prava pridržana.</span>
         <Link href="/#naslovna">
           Na vrh <span aria-hidden="true">↑</span>
         </Link>
