@@ -7,7 +7,6 @@ import HomepageMotion from "./components/homepage-motion";
 import InfoSection from "./components/info-section";
 import ProjectsSection from "./components/projects-section";
 import ReferencesSection from "./components/references-section";
-import SectionDock from "./components/section-dock";
 import SiteHeader from "./components/site-header";
 import {
   aboutContent,
@@ -61,7 +60,6 @@ export default async function Page() {
         <FaqSection {...(page?.faq ?? faqContent)} />
         <ContactSection {...(page?.contact ?? contactContent)} />
       </main>
-      {/* <SectionDock /> */}
     </>
   );
 }

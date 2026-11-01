@@ -23,7 +23,8 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  background-color: var(--background);
+  scroll-behavior: auto;
 }
 
 body {
@@ -2776,38 +2777,6 @@ button {
   font-weight: 500;
 }
 
-.project-gallery__nav {
-  display: flex;
-  gap: 8px;
-}
-
-.project-gallery__nav button {
-  display: grid;
-  width: 48px;
-  height: 48px;
-  place-items: center;
-  border: 1px solid rgb(223 197 161 / 45%);
-  background: transparent;
-  color: var(--gold-light);
-  font-size: 18px;
-  cursor: pointer;
-  transition:
-    background-color 200ms ease,
-    color 200ms ease,
-    opacity 200ms ease;
-}
-
-.project-gallery__nav button:hover:not(:disabled),
-.project-gallery__nav button:focus-visible:not(:disabled) {
-  background: var(--gold-light);
-  color: var(--ink);
-}
-
-.project-gallery__nav button:disabled {
-  cursor: default;
-  opacity: 0.28;
-}
-
 .project-gallery__rail {
   --h: clamp(300px, 40vw, 580px);
   --gutter: max(24px, calc((100% - 1380px) / 2));
@@ -2916,18 +2885,6 @@ button {
   vertical-align: middle;
 }
 
-.project-gallery__card .project-gallery__expand {
-  bottom: 14px;
-  right: 14px;
-  opacity: 0;
-  transition: opacity 250ms ease;
-}
-
-.project-gallery__card:hover .project-gallery__expand,
-.project-gallery__card:focus-visible .project-gallery__expand {
-  opacity: 1;
-}
-
 .project-gallery__progress {
   position: relative;
   width: min(100% - 48px, 1380px);
@@ -2979,7 +2936,6 @@ button {
   }
 }
 
-.project-gallery__expand,
 .project-gallery__counter {
   position: absolute;
   z-index: 1;
@@ -2991,13 +2947,6 @@ button {
   background: rgb(18 21 22 / 54%);
   color: #fff;
   backdrop-filter: blur(14px);
-}
-
-.project-gallery__expand {
-  bottom: 20px;
-  right: 20px;
-  width: 42px;
-  font-size: 20px;
 }
 
 .project-gallery__counter {
@@ -3053,8 +3002,7 @@ button {
   font-size: 18px;
 }
 
-.project-lightbox__close,
-.project-lightbox__arrow {
+.project-lightbox__close {
   position: absolute;
   z-index: 1;
   display: grid;
@@ -3072,8 +3020,7 @@ button {
     background-color 200ms ease;
 }
 
-.project-lightbox__close:hover,
-.project-lightbox__arrow:hover {
+.project-lightbox__close:hover {
   border-color: var(--gold);
   background: rgb(18 21 22 / 78%);
   color: var(--gold-light);
@@ -3090,19 +3037,6 @@ button {
 .project-lightbox__close span {
   display: block;
   transform: translateY(-1px);
-}
-
-.project-lightbox__arrow {
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.project-lightbox__arrow--previous {
-  left: 28px;
-}
-
-.project-lightbox__arrow--next {
-  right: 28px;
 }
 
 .project-lightbox__caption {
@@ -3896,10 +3830,6 @@ button {
     align-items: flex-end;
   }
 
-  .project-gallery__nav {
-    display: none;
-  }
-
   .project-gallery__rail {
     --h: min(400px, 104vw);
     --gutter: 20px;
@@ -3908,10 +3838,6 @@ button {
   .project-gallery__item[data-shape="wide"] {
     --scale: 0.8;
     --ratio: 1;
-  }
-
-  .project-gallery__card .project-gallery__expand {
-    display: none;
   }
 
   .project-detail__contact {
@@ -3943,14 +3869,6 @@ button {
 
   .project-lightbox__close {
     top: 14px;
-    right: 14px;
-  }
-
-  .project-lightbox__arrow--previous {
-    left: 14px;
-  }
-
-  .project-lightbox__arrow--next {
     right: 14px;
   }
 

@@ -39,8 +39,6 @@ export default function ProjectGallery({
   const swipeRef = useRef<number | null>(null);
 
   const [railIndex, setRailIndex] = useState(0);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
   const [scrollable, setScrollable] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
@@ -66,8 +64,6 @@ export default function ProjectGallery({
       }
 
       setScrollable(max > 8);
-      setAtStart(rail.scrollLeft <= 2);
-      setAtEnd(rail.scrollLeft >= max - 2);
       setRailIndex(Math.round(progress * (count - 1)));
     };
     const schedule = () => {
@@ -113,11 +109,6 @@ export default function ProjectGallery({
   }, [count, isOpen]);
 
   if (!count) return null;
-
-  const scrollByPage = (direction: 1 | -1) => {
-    const rail = railRef.current;
-    rail?.scrollBy({ left: direction * rail.clientWidth * 0.7, behavior: "smooth" });
-  };
 
   // Povlačenje mišem; dodir i trackpad već rade nativno.
   const onPointerDown = (event: PointerEvent<HTMLUListElement>) => {
@@ -186,24 +177,6 @@ export default function ProjectGallery({
             <span className="project-gallery__position">
               <strong>{pad(railIndex + 1)}</strong> / {pad(count)}
             </span>
-            <div className="project-gallery__nav">
-              <button
-                type="button"
-                onClick={() => scrollByPage(-1)}
-                disabled={atStart}
-                aria-label="Prethodne fotografije"
-              >
-                ←
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollByPage(1)}
-                disabled={atEnd}
-                aria-label="Sljedeće fotografije"
-              >
-                →
-              </button>
-            </div>
           </div>
         ) : null}
       </div>
@@ -240,9 +213,6 @@ export default function ProjectGallery({
               <span className="project-gallery__index" aria-hidden="true">
                 {pad(index + 1)}
               </span>
-              <span className="project-gallery__expand" aria-hidden="true">
-                ⤢
-              </span>
             </button>
           </li>
         ))}
@@ -275,16 +245,6 @@ export default function ProjectGallery({
           >
             <span aria-hidden="true">×</span>
           </button>
-          {count > 1 ? (
-            <button
-              type="button"
-              className="project-lightbox__arrow project-lightbox__arrow--previous"
-              onClick={() => step(-1)}
-              aria-label="Prethodna fotografija"
-            >
-              ←
-            </button>
-          ) : null}
           <div className="project-lightbox__image" key={activeImage._key}>
             <Image
               src={activeImage.src}
@@ -299,16 +259,6 @@ export default function ProjectGallery({
           >
             {lightboxIndex + 1}/{count}
           </span>
-          {count > 1 ? (
-            <button
-              type="button"
-              className="project-lightbox__arrow project-lightbox__arrow--next"
-              onClick={() => step(1)}
-              aria-label="Sljedeća fotografija"
-            >
-              →
-            </button>
-          ) : null}
           {activeImage.caption ? (
             <p className="project-lightbox__caption">{activeImage.caption}</p>
           ) : null}
