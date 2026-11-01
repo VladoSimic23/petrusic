@@ -155,7 +155,7 @@ export default function ReferencesSection({
                     <Link
                       className="reference-step__link"
                       href={`/izgradeni-objekti/${project.slug}`}
-                      tabIndex={isActive ? 0 : -1}
+                      tabIndex={0}
                     >
                       Pogledaj zgradu <span aria-hidden="true">→</span>
                     </Link>

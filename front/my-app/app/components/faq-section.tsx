@@ -46,18 +46,24 @@ export default function FaqSection({
 
       <div className="faq-section__layout">
         <div className="faq-section__intro">
-          {eyebrow ? <p className="eyebrow eyebrow--dark">{eyebrow}</p> : null}
-          <h2 id="faq-title">{title}</h2>
-          {description ? (
-            <p className="faq-section__description">{description}</p>
-          ) : null}
+          <div className="faq-section__heading">
+            {eyebrow ? <p className="eyebrow eyebrow--dark">{eyebrow}</p> : null}
+            <h2 id="faq-title">{title}</h2>
+          </div>
+          {description || cta ? (
+            <div className="faq-section__summary">
+              {description ? (
+                <p className="faq-section__description">{description}</p>
+              ) : null}
 
-          {cta ? (
-            <div className="faq-section__cta">
-              {cta.text ? <p>{cta.text}</p> : null}
-              <Link className="faq-section__cta-link" href={cta.link.href}>
-                {cta.link.label} <span aria-hidden="true">→</span>
-              </Link>
+              {cta ? (
+                <div className="faq-section__cta">
+                  {cta.text ? <p>{cta.text}</p> : null}
+                  <Link className="faq-section__cta-link" href={cta.link.href}>
+                    {cta.link.label} <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              ) : null}
             </div>
           ) : null}
         </div>

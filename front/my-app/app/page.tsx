@@ -3,6 +3,7 @@ import AboutSection from "./components/about-section";
 import ContactSection from "./components/contact-section";
 import FaqSection from "./components/faq-section";
 import Hero from "./components/hero";
+import HomepageMotion from "./components/homepage-motion";
 import InfoSection from "./components/info-section";
 import ProjectsSection from "./components/projects-section";
 import ReferencesSection from "./components/references-section";
@@ -39,6 +40,7 @@ export default async function Page() {
     <>
       <SiteHeader />
       <main>
+        <HomepageMotion />
         <Hero {...(page?.hero ?? heroContent)} />
         <ProjectsSection {...(page?.projects ?? projectsContent)} />
         <AboutSection

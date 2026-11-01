@@ -588,14 +588,14 @@ button {
 
 .projects-showcase__cta {
   display: inline-flex;
-  min-height: 48px;
+  min-height: 44px;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
   margin-top: 4px;
-  padding: 0 18px;
+  padding: 0 15px;
   border: 1px solid var(--gold);
   color: var(--gold-light);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   transition:
@@ -708,25 +708,34 @@ button {
   width: fit-content;
   max-width: 100%;
   margin: 13px 0 0;
-  padding-bottom: 12px;
-  border-bottom: 2px solid rgb(196 164 123 / 72%);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(36px, 5.2vw, 60px);
   font-style: normal;
-  font-weight: 500;
-  letter-spacing: -0.055em;
-  line-height: 1.02;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.06;
+  text-shadow: 0 2px 20px rgb(196 164 123 / 10%);
   text-wrap: balance;
 }
 
-.section-heading h2::first-letter,
-.info-section h2::first-letter,
-.about-section__heading h2::first-letter,
-.faq-section__intro h2::first-letter {
-  color: var(--gold-light);
-  font-size: 1.12em;
-  letter-spacing: 0;
+.section-heading h2::after,
+.info-section h2::after,
+.about-section__heading h2::after,
+.faq-section__intro h2::after {
+  display: block;
+  width: 66px;
+  height: 2px;
+  margin-top: 16px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--gold-light),
+    var(--gold) 68%,
+    rgb(196 164 123 / 12%)
+  );
+  box-shadow: 0 0 14px rgb(196 164 123 / 22%);
+  content: "";
 }
 
 .project-options {
@@ -805,14 +814,14 @@ button {
 
 .projects-section__view-all {
   display: inline-flex;
-  min-height: 52px;
+  min-height: 46px;
   align-items: center;
   justify-content: center;
-  gap: 22px;
-  padding: 0 25px;
+  gap: 18px;
+  padding: 0 21px;
   border: 1px solid var(--gold);
   color: var(--gold-light);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   transition:
@@ -1083,10 +1092,10 @@ button {
 }
 
 .reference-step__link {
-  padding: 10px 18px;
+  padding: 8px 15px;
   background: var(--gold);
   color: var(--ink);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   pointer-events: auto;
@@ -1161,14 +1170,14 @@ button {
 
 .references-section__cta {
   display: inline-flex;
-  min-height: 54px;
+  min-height: 48px;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 0 34px;
+  padding: 0 28px;
   border: 1px solid var(--gold);
   color: var(--gold-light);
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   transition:
@@ -1189,13 +1198,113 @@ button {
 }
 
 @media (max-width: 680px) {
+  .reference-stage {
+    gap: 18px;
+    counter-reset: reference-card;
+  }
+
+  .reference-step {
+    height: auto;
+    border: 1px solid rgb(223 197 161 / 18%);
+    background: rgb(255 255 255 / 3%);
+    box-shadow: 0 18px 36px rgb(0 0 0 / 24%);
+    counter-increment: reference-card;
+  }
+
+  .reference-step__toggle {
+    position: relative;
+    aspect-ratio: 1.25;
+  }
+
+  .reference-step::before {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 3;
+    padding: 7px 10px;
+    border: 1px solid rgb(223 197 161 / 50%);
+    background: rgb(12 14 15 / 58%);
+    color: var(--gold-light);
+    content: counter(reference-card, decimal-leading-zero);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.12em;
+    pointer-events: none;
+  }
+
   .reference-step[data-active="true"] {
-    height: 300px;
+    height: auto;
+    border-color: rgb(223 197 161 / 58%);
+    box-shadow: 0 24px 48px rgb(0 0 0 / 30%);
+  }
+
+  .reference-step::after {
+    display: none;
+  }
+
+  .reference-step__content {
+    position: relative;
+    inset: auto;
+    gap: 7px;
+    padding: 21px;
+    pointer-events: auto;
+  }
+
+  .reference-step__year {
+    font-size: 12px;
+  }
+
+  .reference-step__location {
+    font-size: 10px;
+  }
+
+  .reference-step__title {
+    max-width: none;
+    font-size: clamp(23px, 7vw, 29px);
+  }
+
+  .reference-step__details,
+  .reference-step[data-active="true"] .reference-step__details {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transition: none;
+  }
+
+  .reference-step__details > * {
+    overflow: visible;
+  }
+
+  .reference-step__description {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .reference-step__meta {
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    font-size: 12px;
+  }
+
+  .reference-step__link {
+    padding: 0;
+    background: none;
+    color: var(--gold-light);
+    font-size: 12px;
+    text-transform: none;
+    visibility: visible;
+  }
+
+  .reference-step__link:hover,
+  .reference-step__link:focus-visible {
+    background: none;
+    color: #fff;
   }
 
   .reference-step:hover .reference-step__image,
   .reference-step[data-active="true"] .reference-step__image {
-    transform: scale(1.02);
+    transform: none;
   }
 }
 
@@ -1291,13 +1400,13 @@ button {
 
 .about-section__link {
   display: inline-flex;
-  min-height: 48px;
+  min-height: 44px;
   align-items: center;
-  gap: 28px;
-  padding: 0 18px;
+  gap: 22px;
+  padding: 0 15px;
   border: 1px solid rgb(196 164 123 / 55%);
   color: var(--gold-light);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   transition:
     border-color 0.2s ease,
@@ -1312,6 +1421,59 @@ button {
 .about-section__link span {
   color: var(--gold);
   font-size: 18px;
+}
+
+.projects-showcase__cta,
+.projects-section__view-all,
+.references-section__cta,
+.about-section__link {
+  border-color: rgb(223 197 161 / 62%);
+  background: linear-gradient(
+    135deg,
+    rgb(223 197 161 / 20%) 0%,
+    rgb(196 164 123 / 7%) 48%,
+    rgb(223 197 161 / 16%) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 15%),
+    0 8px 22px rgb(0 0 0 / 20%);
+  color: var(--gold-light);
+  transition:
+    background 240ms ease,
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    color 240ms ease,
+    transform 240ms ease;
+}
+
+.projects-showcase__cta:hover,
+.projects-showcase__cta:focus-visible,
+.projects-section__view-all:hover,
+.projects-section__view-all:focus-visible,
+.references-section__cta:hover,
+.references-section__cta:focus-visible,
+.about-section__link:hover,
+.about-section__link:focus-visible {
+  border-color: var(--gold-light);
+  background: linear-gradient(
+    135deg,
+    var(--gold-light) 0%,
+    var(--gold) 72%,
+    #b58f5e 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 38%),
+    0 12px 28px rgb(196 164 123 / 24%);
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.projects-showcase__cta:focus-visible,
+.projects-section__view-all:focus-visible,
+.references-section__cta:focus-visible,
+.about-section__link:focus-visible {
+  outline: 2px solid rgb(223 197 161 / 54%);
+  outline-offset: 4px;
 }
 
 /* Zatamnjena slika kao pozadina sekcije. */
@@ -1945,26 +2107,37 @@ button {
 
 .faq-section__layout {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: clamp(32px, 6vw, 96px);
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 48px);
   align-items: start;
 }
 
 .faq-section__intro {
-  position: sticky;
-  top: 110px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
+  gap: clamp(24px, 5vw, 72px);
+  align-items: end;
+}
+
+.faq-section__heading {
+  min-width: 0;
+}
+
+.faq-section__summary {
+  max-width: 520px;
+  justify-self: end;
 }
 
 .faq-section__description {
-  max-width: 440px;
-  margin: 0 0 32px;
+  max-width: 520px;
+  margin: 0 0 22px;
   color: var(--muted);
   line-height: 1.7;
 }
 
 .faq-section__cta {
   padding: 22px 24px;
-  max-width: 440px;
+  max-width: 520px;
   border-left: 2px solid var(--gold);
   background: rgba(255, 255, 255, 0.04);
 }
@@ -1986,6 +2159,8 @@ button {
 
 .faq-list {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 12px;
   margin: 0;
   padding: 0;
@@ -2109,12 +2284,17 @@ button {
 }
 
 @media (max-width: 900px) {
-  .faq-section__layout {
+  .faq-section__intro {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
-  .faq-section__intro {
-    position: static;
+  .faq-section__summary {
+    justify-self: stretch;
+  }
+
+  .faq-list {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -3092,12 +3272,29 @@ button {
   max-width: 620px;
   margin: 20px 0 0;
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  font-size: clamp(40px, 5.2vw, 68px);
-  font-weight: 500;
-  letter-spacing: -0.06em;
-  line-height: 0.99;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(38px, 5.2vw, 64px);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  text-shadow: 0 2px 20px rgb(196 164 123 / 10%);
   text-wrap: balance;
+}
+
+.contact-section__intro h2::after {
+  display: block;
+  width: 66px;
+  height: 2px;
+  margin-top: 16px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--gold-light),
+    var(--gold) 68%,
+    rgb(196 164 123 / 12%)
+  );
+  box-shadow: 0 0 14px rgb(196 164 123 / 22%);
+  content: "";
 }
 
 .contact-section__description {
@@ -4549,7 +4746,29 @@ button {
   }
 }
 
+@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .homepage-motion-ready .motion-reveal {
+    opacity: 0;
+    transform: translate3d(0, 34px, 0) scale(0.985);
+    transition:
+      opacity 850ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1000ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--motion-delay, 0ms);
+  }
+
+  .homepage-motion-ready .motion-reveal.motion-revealed {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .motion-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
   .hero__image,
   .project-detail__hero-media img {
     animation: none;
