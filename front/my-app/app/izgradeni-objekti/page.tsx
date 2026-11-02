@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import BuildingCard from "../components/building-card";
-import SiteHeader from "../components/site-header";
 import { getCompletedBuildings } from "../../sanity/lib/buildings";
 
 export const metadata: Metadata = {
@@ -29,9 +28,7 @@ export default async function CompletedBuildingsPage() {
   ].filter((stat) => stat !== null);
 
   return (
-    <>
-      <SiteHeader />
-      <main className="sale-page built-page">
+    <main className="sale-page built-page">
         <header className="sale-page__intro">
           <Link className="sale-page__back" href="/#arhiva">
             <span aria-hidden="true">←</span> Naslovna
@@ -78,7 +75,6 @@ export default async function CompletedBuildingsPage() {
             </Link>
           </div>
         )}
-      </main>
-    </>
+    </main>
   );
 }

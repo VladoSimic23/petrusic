@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SaleProjectCard from "../components/sale-project-card";
-import SiteHeader from "../components/site-header";
 import { getProjectsForSale } from "../../sanity/lib/projects";
 
 export const metadata: Metadata = {
@@ -14,9 +13,7 @@ export default async function ProjectsForSalePage() {
   const projects = await getProjectsForSale();
 
   return (
-    <>
-      <SiteHeader />
-      <main className="sale-page">
+    <main className="sale-page">
         <header className="sale-page__intro">
           <Link className="sale-page__back" href="/#projekti">
             <span aria-hidden="true">←</span> Naslovna
@@ -53,7 +50,6 @@ export default async function ProjectsForSalePage() {
             </Link>
           </div>
         )}
-      </main>
-    </>
+    </main>
   );
 }

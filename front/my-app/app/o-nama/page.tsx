@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import CountUp from "../components/count-up";
-import SiteHeader from "../components/site-header";
 import { getAboutPage } from "../../sanity/lib/about";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -51,9 +50,7 @@ export default async function AboutPage() {
   ].filter((fact) => fact.value);
 
   return (
-    <>
-      <SiteHeader />
-      <main className="about-page">
+    <main className="about-page">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -209,7 +206,6 @@ export default async function AboutPage() {
             Kontaktirajte nas <span aria-hidden="true">↗</span>
           </Link>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

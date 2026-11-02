@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 import BuildingCard from "../../components/building-card";
 import ProjectGallery from "../../components/project-gallery";
-import SiteHeader from "../../components/site-header";
 import { portableComponents } from "../../components/project-body";
 import { messagingNumber, phoneHref } from "../../components/contact-section";
 import {
@@ -45,21 +44,18 @@ export async function generateMetadata({
 
 export default function CompletedBuildingPage({ params }: PageProps) {
   return (
-    <>
-      <SiteHeader />
-      <Suspense
-        fallback={
-          <main className="project-detail">
-            <div
-              className="project-detail__loading"
-              aria-label="Učitavanje objekta"
-            />
-          </main>
-        }
-      >
-        <BuildingContent params={params} />
-      </Suspense>
-    </>
+    <Suspense
+      fallback={
+        <main className="project-detail">
+          <div
+            className="project-detail__loading"
+            aria-label="Učitavanje objekta"
+          />
+        </main>
+      }
+    >
+      <BuildingContent params={params} />
+    </Suspense>
   );
 }
 

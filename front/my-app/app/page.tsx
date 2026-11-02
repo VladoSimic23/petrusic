@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
 import AboutSection from "./components/about-section";
-import ContactSection from "./components/contact-section";
 import FaqSection from "./components/faq-section";
 import Hero from "./components/hero";
 import HomepageMotion from "./components/homepage-motion";
 import InfoSection from "./components/info-section";
 import ProjectsSection from "./components/projects-section";
 import ReferencesSection from "./components/references-section";
-import SiteHeader from "./components/site-header";
 import {
   aboutContent,
-  contactContent,
   faqContent,
   heroContent,
   infoSections,
@@ -37,7 +34,6 @@ export default async function Page() {
 
   return (
     <>
-      <SiteHeader />
       <main>
         <HomepageMotion />
         <Hero {...(page?.hero ?? heroContent)} />
@@ -58,7 +54,6 @@ export default async function Page() {
           ),
         )}
         <FaqSection {...(page?.faq ?? faqContent)} />
-        <ContactSection {...(page?.contact ?? contactContent)} />
       </main>
     </>
   );

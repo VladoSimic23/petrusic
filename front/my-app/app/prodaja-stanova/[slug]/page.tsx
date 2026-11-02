@@ -7,7 +7,6 @@ import { PortableText } from "@portabletext/react";
 import ProjectGallery from "../../components/project-gallery";
 import { portableComponents } from "../../components/project-body";
 import SaleProjectCard from "../../components/sale-project-card";
-import SiteHeader from "../../components/site-header";
 import { messagingNumber, phoneHref } from "../../components/contact-section";
 import { getHomePage } from "../../../sanity/lib/home";
 import {
@@ -48,21 +47,18 @@ export async function generateMetadata({
 
 export default function ProjectDetailPage({ params }: PageProps) {
   return (
-    <>
-      <SiteHeader />
-      <Suspense
-        fallback={
-          <main className="project-detail">
-            <div
-              className="project-detail__loading"
-              aria-label="Učitavanje projekta"
-            />
-          </main>
-        }
-      >
-        <ProjectDetailContent params={params} />
-      </Suspense>
-    </>
+    <Suspense
+      fallback={
+        <main className="project-detail">
+          <div
+            className="project-detail__loading"
+            aria-label="Učitavanje projekta"
+          />
+        </main>
+      }
+    >
+      <ProjectDetailContent params={params} />
+    </Suspense>
   );
 }
 
