@@ -13,6 +13,7 @@ import {
   getProjectBySlug,
   getProjectsForSale,
 } from "../../../sanity/lib/projects";
+import FirstPersonApartmentWalkthrough from "@/app/components/FirstPersonApartmentWalkthrough";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -155,7 +156,9 @@ async function ProjectDetailContent({ params }: PageProps) {
       {gallery.length > 1 ? (
         <ProjectGallery images={gallery} title={project.title} />
       ) : null}
-
+      {project.slug === "stambeno-poslovna-zgrada-centar" ? (
+        <FirstPersonApartmentWalkthrough />
+      ) : null}
       {project.body.length ? (
         <section
           className="project-detail__story project-detail__wrap"
