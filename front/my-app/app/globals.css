@@ -7393,54 +7393,57 @@ button {
   content: "";
 }
 
-.references-section .reference-step {
-  border-color: rgb(196 164 123 / 26%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 236 200 / 6%),
-    0 24px 50px -34px rgb(0 0 0 / 85%);
-}
+/* Kartice: kraljevski stil samo na mobitelu */
+@media (max-width: 900px) {
+  .references-section .reference-step {
+    border-color: rgb(196 164 123 / 26%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 236 200 / 6%),
+      0 24px 50px -34px rgb(0 0 0 / 85%);
+  }
 
-.references-section .reference-step__content {
-  background:
-    radial-gradient(90% 100% at 0% 0%, rgb(196 164 123 / 10%), transparent 68%),
-    linear-gradient(150deg, rgb(30 34 36 / 72%), rgb(16 19 20 / 86%));
-}
+  .references-section .reference-step__content {
+    background:
+      radial-gradient(90% 100% at 0% 0%, rgb(196 164 123 / 10%), transparent 68%),
+      linear-gradient(150deg, rgb(30 34 36 / 72%), rgb(16 19 20 / 86%));
+  }
 
-.references-section .reference-step__year {
-  color: #e8cda0;
-  font-family: Georgia, "Times New Roman", serif;
-  letter-spacing: 0.08em;
-}
+  .references-section .reference-step__year {
+    color: #e8cda0;
+    font-family: Georgia, "Times New Roman", serif;
+    letter-spacing: 0.08em;
+  }
 
-.references-section .reference-step__location {
-  color: rgb(232 205 160 / 72%);
-}
+  .references-section .reference-step__location {
+    color: rgb(232 205 160 / 72%);
+  }
 
-.references-section .reference-step__title {
-  color: #f4e6cb;
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 500;
-}
+  .references-section .reference-step__title {
+    color: #f4e6cb;
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 500;
+  }
 
-.references-section .reference-step__description {
-  padding-left: 18px;
-  border-left: 1px solid rgb(232 205 160 / 40%);
-}
+  .references-section .reference-step__description {
+    padding-left: 18px;
+    border-left: 1px solid rgb(232 205 160 / 40%);
+  }
 
-.references-section .reference-step__link {
-  border-color: rgb(232 205 160 / 50%);
-  color: #e8cda0;
-  transition:
-    border-color 250ms ease,
-    box-shadow 250ms ease,
-    color 250ms ease;
-}
+  .references-section .reference-step__link {
+    border-color: rgb(232 205 160 / 50%);
+    color: #e8cda0;
+    transition:
+      border-color 250ms ease,
+      box-shadow 250ms ease,
+      color 250ms ease;
+  }
 
-.references-section .reference-step__link:hover,
-.references-section .reference-step__link:focus-visible {
-  border-color: rgb(240 217 168 / 85%);
-  box-shadow: 0 0 28px -12px rgb(214 182 132 / 60%);
-  color: #fff0d6;
+  .references-section .reference-step__link:hover,
+  .references-section .reference-step__link:focus-visible {
+    border-color: rgb(240 217 168 / 85%);
+    box-shadow: 0 0 28px -12px rgb(214 182 132 / 60%);
+    color: #fff0d6;
+  }
 }
 
 .references-section__cta {
