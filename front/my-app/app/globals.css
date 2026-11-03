@@ -7107,3 +7107,257 @@ button {
     gap: 10px;
   }
 }
+
+/* ---------- AboutSection (naslovna): kraljevski stil ---------- */
+.about-section {
+  position: relative;
+  isolation: isolate;
+}
+
+.about-section .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #e8cda0;
+}
+
+.about-section .eyebrow::before {
+  width: 30px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e8cda0);
+  content: "";
+}
+
+.about-section__heading h2 {
+  background: linear-gradient(115deg, #fff4dd 0%, #e8cda0 46%, #b8925c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.about-section__inner {
+  position: relative;
+}
+
+.about-section__inner::before {
+  position: absolute;
+  inset: -22px -26px;
+  z-index: 0;
+  background:
+    linear-gradient(rgb(240 217 168 / 72%), rgb(240 217 168 / 72%)) top left / 20px 1px,
+    linear-gradient(rgb(240 217 168 / 72%), rgb(240 217 168 / 72%)) top left / 1px 20px,
+    linear-gradient(rgb(240 217 168 / 72%), rgb(240 217 168 / 72%)) top right / 20px 1px,
+    linear-gradient(rgb(240 217 168 / 72%), rgb(240 217 168 / 72%)) top right / 1px 20px,
+    linear-gradient(rgb(240 217 168 / 72%), rgb(240 217 168 / 72%)) bottom left / 20px 1px,
+    linear-gradient(rgb(240 217 168 / 72%), rgb(240 217 168 / 72%)) bottom left / 1px 20px,
+    linear-gradient(rgb(240 217 168 / 72%), rgb(240 217 168 / 72%)) bottom right / 20px 1px,
+    linear-gradient(rgb(240 217 168 / 72%), rgb(240 217 168 / 72%)) bottom right / 1px 20px;
+  background-repeat: no-repeat;
+  content: "";
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.about-section__content p:first-child {
+  padding-left: 22px;
+  background:
+    linear-gradient(180deg, transparent, #e8cda0 20%, #9c7a4c 80%, transparent) left / 2px 100% no-repeat;
+  color: #f3e6cc;
+}
+
+.about-section__link {
+  position: relative;
+  border-color: rgb(232 205 160 / 50%);
+  color: #e8cda0;
+  box-shadow: 0 0 0 4px rgb(196 164 123 / 6%);
+}
+
+.about-section__link:hover,
+.about-section__link:focus-visible {
+  border-color: rgb(240 217 168 / 85%);
+  box-shadow:
+    0 0 0 4px rgb(196 164 123 / 10%),
+    0 0 30px -12px rgb(214 182 132 / 60%);
+  color: #fff0d6;
+}
+
+.about-section__stats {
+  position: relative;
+  border: 1px solid rgb(214 182 132 / 40%);
+  background:
+    radial-gradient(90% 100% at 0% 0%, rgb(196 164 123 / 12%), transparent 68%),
+    linear-gradient(150deg, rgb(36 40 42 / 92%), rgb(18 21 22 / 96%));
+  box-shadow:
+    inset 0 1px 0 rgb(255 236 200 / 7%),
+    0 28px 56px -36px rgb(0 0 0 / 85%);
+}
+
+.about-section__stats::before {
+  position: absolute;
+  top: -1px;
+  right: 14%;
+  left: 14%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(240 217 168 / 90%), transparent);
+  content: "";
+}
+
+.about-section__stats .stats-section__value {
+  background: linear-gradient(180deg, #fff1d4, #d9b67c 60%, #9c7a4c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.about-section__caption {
+  border: 1px solid rgb(214 182 132 / 45%);
+  background: rgb(18 21 22 / 82%);
+  color: #e8cda0;
+  box-shadow: 0 0 0 5px rgb(14 16 17 / 50%), 0 0 0 6px rgb(196 164 123 / 18%);
+}
+
+@media (max-width: 640px) {
+  .about-section__inner::before {
+    inset: -14px -10px;
+  }
+}
+
+/* ---------- AboutSection brojke: kao na /o-nama ---------- */
+.about-section__stats.stats-section__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 1px solid rgb(214 182 132 / 42%);
+  background:
+    radial-gradient(90% 100% at 0% 0%, rgb(196 164 123 / 11%), transparent 68%),
+    linear-gradient(150deg, rgb(36 40 42 / 94%), rgb(18 21 22 / 97%));
+  box-shadow:
+    inset 0 1px 0 rgb(255 236 200 / 7%),
+    0 30px 60px -36px rgb(0 0 0 / 85%);
+  list-style: none;
+}
+
+.about-section__stats.stats-section__list::after {
+  position: absolute;
+  inset: 8px;
+  background:
+    linear-gradient(rgb(240 217 168 / 82%), rgb(240 217 168 / 82%)) top left / 18px 1px,
+    linear-gradient(rgb(240 217 168 / 82%), rgb(240 217 168 / 82%)) top left / 1px 18px,
+    linear-gradient(rgb(240 217 168 / 82%), rgb(240 217 168 / 82%)) top right / 18px 1px,
+    linear-gradient(rgb(240 217 168 / 82%), rgb(240 217 168 / 82%)) top right / 1px 18px,
+    linear-gradient(rgb(240 217 168 / 82%), rgb(240 217 168 / 82%)) bottom left / 18px 1px,
+    linear-gradient(rgb(240 217 168 / 82%), rgb(240 217 168 / 82%)) bottom left / 1px 18px,
+    linear-gradient(rgb(240 217 168 / 82%), rgb(240 217 168 / 82%)) bottom right / 18px 1px,
+    linear-gradient(rgb(240 217 168 / 82%), rgb(240 217 168 / 82%)) bottom right / 1px 18px;
+  background-repeat: no-repeat;
+  content: "";
+  pointer-events: none;
+}
+
+.about-section__stats .stats-section__item {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 28px 24px;
+  border: 0;
+  border-right: 1px solid rgb(196 164 123 / 18%);
+  background: none;
+  text-align: center;
+}
+
+.about-section__stats .stats-section__item:last-child {
+  border-right: 0;
+}
+
+.about-section__stats .stats-section__value {
+  font-size: clamp(34px, 5vw, 56px);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.about-section__stats .stats-section__label {
+  color: rgb(232 205 160 / 72%);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .about-section__stats.stats-section__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-section__stats .stats-section__item {
+    padding: 20px 16px;
+  }
+
+  .about-section__stats .stats-section__item:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .about-section__stats .stats-section__item:nth-child(n + 3) {
+    border-top: 1px solid rgb(196 164 123 / 18%);
+  }
+
+  .about-section__stats .stats-section__item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+.about-section .about-section__stats.stats-section__list {
+  margin-top: clamp(40px, 6vw, 72px);
+}
+
+@media (max-width: 640px) {
+  .about-section .about-section__stats.stats-section__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 40px;
+  }
+
+  .about-section .about-section__stats .stats-section__item:nth-child(3) {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgb(196 164 123 / 18%);
+    border-right: 0;
+  }
+}
+
+/* Brojke: 2 + 1 raspored (treća stavka preko cijele širine) */
+@media (max-width: 900px) {
+  .about-section ul.about-section__stats.stats-section__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .about-section ul.about-section__stats > .stats-section__item {
+    width: auto;
+    min-width: 0;
+    padding: 22px 14px;
+    border: 0;
+    border-right: 1px solid rgb(196 164 123 / 18%);
+  }
+
+  .about-section ul.about-section__stats > .stats-section__item:nth-child(2) {
+    border-right: 0;
+  }
+
+  .about-section ul.about-section__stats > .stats-section__item:nth-child(3) {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgb(196 164 123 / 18%);
+    border-right: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .about-section ul.about-section__stats.stats-section__list {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 0;
+  }
+}
