@@ -156,9 +156,9 @@ async function ProjectDetailContent({ params }: PageProps) {
       {gallery.length > 1 ? (
         <ProjectGallery images={gallery} title={project.title} />
       ) : null}
-      {project.slug === "stambeno-poslovna-zgrada-centar" ? (
+      {/* {project.slug === "stambeno-poslovna-zgrada-centar" ? (
         <FirstPersonApartmentWalkthrough />
-      ) : null}
+      ) : null} */}
       {project.body.length ? (
         <section
           className="project-detail__story project-detail__wrap"
