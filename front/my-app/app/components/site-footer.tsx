@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { getFooterContact } from "../../sanity/lib/footer";
-import { messagingNumber, phoneHref } from "./contact-section";
 
 const currentYear = new Date().getFullYear();
 
@@ -12,29 +10,7 @@ const links = [
   { label: "Kontakt", href: "/#kontakt" },
 ];
 
-export default async function SiteFooter() {
-  const contact = await getFooterContact();
-
-  const details = [
-    contact?.email
-      ? { label: "E-mail", value: contact.email, href: `mailto:${contact.email}` }
-      : null,
-    contact?.phone
-      ? { label: "Telefon", value: contact.phone, href: phoneHref(contact.phone) }
-      : null,
-    contact?.whatsapp
-      ? {
-          label: "WhatsApp",
-          value: contact.whatsapp,
-          href: `https://wa.me/${messagingNumber(contact.whatsapp)}`,
-        }
-      : null,
-    contact?.address ? { label: "Adresa", value: contact.address } : null,
-    contact?.officeHours
-      ? { label: "Radno vrijeme", value: contact.officeHours }
-      : null,
-  ].filter((detail) => detail !== null);
-
+export default function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="site-footer__inner">
@@ -65,34 +41,6 @@ export default async function SiteFooter() {
             ))}
           </ul>
         </nav>
-
-        {details.length ? (
-          <div className="site-footer__column">
-            <h2 className="site-footer__heading">Kontakt</h2>
-            <ul>
-              {details.map((detail) => (
-                <li key={detail.label}>
-                  <span>{detail.label}</span>
-                  {detail.href ? (
-                    <a
-                      href={detail.href}
-                      target={detail.href.startsWith("https://") ? "_blank" : undefined}
-                      rel={
-                        detail.href.startsWith("https://")
-                          ? "noopener noreferrer"
-                          : undefined
-                      }
-                    >
-                      {detail.value}
-                    </a>
-                  ) : (
-                    <strong>{detail.value}</strong>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
       </div>
 
       <div className="site-footer__bar">

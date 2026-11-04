@@ -130,7 +130,32 @@ async function ProjectDetailContent({ params }: PageProps) {
         </div>
       </section>
 
-      <div className="project-detail__wrap">
+      <div className="about-page">
+        <section className="about-stats" aria-label="Brojke">
+          <ul>
+            <li>
+              <strong style={{ fontSize: "24px", paddingBottom: "8px" }}>
+                Lokacija
+              </strong>
+              <span style={{ fontSize: "16px" }}>{project.location}</span>
+            </li>
+            <li>
+              <strong style={{ fontSize: "24px", paddingBottom: "8px" }}>
+                Fotografije
+              </strong>
+              <span style={{ fontSize: "16px" }}>{gallery.length}</span>
+            </li>
+            <li>
+              <strong style={{ fontSize: "24px", paddingBottom: "8px" }}>
+                Status
+              </strong>
+              <span style={{ fontSize: "16px" }}>Aktualno u ponudi</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      {/* <div className="project-detail__wrap">
         <dl className="project-detail__facts">
           <div>
             <dt>Lokacija</dt>
@@ -151,7 +176,7 @@ async function ProjectDetailContent({ params }: PageProps) {
             <dd>Aktualno u ponudi</dd>
           </div>
         </dl>
-      </div>
+      </div> */}
 
       {gallery.length > 1 ? (
         <ProjectGallery images={gallery} title={project.title} />

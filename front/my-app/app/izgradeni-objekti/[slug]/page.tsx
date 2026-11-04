@@ -121,7 +121,10 @@ async function BuildingContent({ params }: PageProps) {
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <section className="project-detail__hero" aria-labelledby="building-title">
+      <section
+        className="project-detail__hero"
+        aria-labelledby="building-title"
+      >
         <div className="project-detail__hero-media">
           <Image
             src={building.image.src}
