@@ -13,6 +13,7 @@ const titledTextItem = (name: string, title: string) =>
         type: 'string',
         validation: (rule) => rule.required(),
       }),
+      defineField({name: 'titleEn', title: 'Title (English)', type: 'string'}),
       defineField({
         name: 'description',
         title: 'Opis',
@@ -20,6 +21,7 @@ const titledTextItem = (name: string, title: string) =>
         rows: 3,
         validation: (rule) => rule.required(),
       }),
+      defineField({name: 'descriptionEn', title: 'Description (English)', type: 'text', rows: 3}),
     ],
     preview: {select: {title: 'title', subtitle: 'description'}},
   })
@@ -47,8 +49,20 @@ export const aboutPage = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'titleEn',
+      title: 'Interni naziv (English)',
+      type: 'string',
+      group: 'intro',
+    }),
+    defineField({
       name: 'eyebrow',
       title: 'Mala oznaka iznad naslova',
+      type: 'string',
+      group: 'intro',
+    }),
+    defineField({
+      name: 'eyebrowEn',
+      title: 'Mala oznaka iznad naslova (English)',
       type: 'string',
       group: 'intro',
     }),
@@ -60,14 +74,33 @@ export const aboutPage = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'headingEn',
+      title: 'Glavni naslov (English)',
+      type: 'string',
+      group: 'intro',
+    }),
+    defineField({
       name: 'highlightedHeading',
       title: 'Istaknuti dio naslova (zlatna boja)',
       type: 'string',
       group: 'intro',
     }),
     defineField({
+      name: 'highlightedHeadingEn',
+      title: 'Istaknuti dio naslova (English)',
+      type: 'string',
+      group: 'intro',
+    }),
+    defineField({
       name: 'lead',
       title: 'Uvodni tekst',
+      type: 'text',
+      rows: 3,
+      group: 'intro',
+    }),
+    defineField({
+      name: 'leadEn',
+      title: 'Uvodni tekst (English)',
       type: 'text',
       rows: 3,
       group: 'intro',
@@ -80,12 +113,19 @@ export const aboutPage = defineType({
       group: 'intro',
       fields: [
         defineField({name: 'alt', title: 'Alternativni tekst', type: 'string'}),
+        defineField({name: 'englishAlt', title: 'English alt text', type: 'string'}),
       ],
     }),
 
     defineField({
       name: 'storyTitle',
       title: 'Naslov priče',
+      type: 'string',
+      group: 'story',
+    }),
+    defineField({
+      name: 'storyTitleEn',
+      title: 'Naslov priče (English)',
       type: 'string',
       group: 'story',
     }),
@@ -98,6 +138,14 @@ export const aboutPage = defineType({
       group: 'story',
     }),
     defineField({
+      name: 'storyParagraphsEn',
+      title: 'Odlomci priče (English)',
+      description: 'Svaka stavka je jedan prevedeni odlomak, istim redoslijedom.',
+      type: 'array',
+      of: [defineArrayMember({type: 'text', rows: 4})],
+      group: 'story',
+    }),
+    defineField({
       name: 'storyImage',
       title: 'Slika uz priču',
       type: 'image',
@@ -105,6 +153,7 @@ export const aboutPage = defineType({
       group: 'story',
       fields: [
         defineField({name: 'alt', title: 'Alternativni tekst', type: 'string'}),
+        defineField({name: 'englishAlt', title: 'English alt text', type: 'string'}),
       ],
     }),
     defineField({
@@ -136,6 +185,7 @@ export const aboutPage = defineType({
               type: 'string',
               validation: (rule) => rule.required(),
             }),
+            defineField({name: 'labelEn', title: 'Opis (English)', type: 'string'}),
           ],
           preview: {
             select: {value: 'value', suffix: 'suffix', label: 'label'},
@@ -157,6 +207,13 @@ export const aboutPage = defineType({
       group: 'values',
     }),
     defineField({
+      name: 'missionEn',
+      title: 'Misija (English)',
+      type: 'text',
+      rows: 4,
+      group: 'values',
+    }),
+    defineField({
       name: 'vision',
       title: 'Vizija',
       type: 'text',
@@ -164,8 +221,21 @@ export const aboutPage = defineType({
       group: 'values',
     }),
     defineField({
+      name: 'visionEn',
+      title: 'Vizija (English)',
+      type: 'text',
+      rows: 4,
+      group: 'values',
+    }),
+    defineField({
       name: 'reasonsTitle',
       title: 'Naslov sekcije „Zašto mi”',
+      type: 'string',
+      group: 'values',
+    }),
+    defineField({
+      name: 'reasonsTitleEn',
+      title: 'Naslov sekcije „Zašto mi” (English)',
       type: 'string',
       group: 'values',
     }),
@@ -184,8 +254,21 @@ export const aboutPage = defineType({
       group: 'services',
     }),
     defineField({
+      name: 'servicesTitleEn',
+      title: 'Naslov sekcije djelatnosti (English)',
+      type: 'string',
+      group: 'services',
+    }),
+    defineField({
       name: 'servicesIntro',
       title: 'Uvod u djelatnosti',
+      type: 'text',
+      rows: 3,
+      group: 'services',
+    }),
+    defineField({
+      name: 'servicesIntroEn',
+      title: 'Uvod u djelatnosti (English)',
       type: 'text',
       rows: 3,
       group: 'services',
@@ -231,6 +314,30 @@ export const aboutPage = defineType({
     defineField({
       name: 'management',
       title: 'Uprava',
+      type: 'string',
+      group: 'company',
+    }),
+    defineField({
+      name: 'companyNameEn',
+      title: 'Puni naziv (English)',
+      type: 'string',
+      group: 'company',
+    }),
+    defineField({
+      name: 'headquartersEn',
+      title: 'Sjedište (English)',
+      type: 'string',
+      group: 'company',
+    }),
+    defineField({
+      name: 'foundedEn',
+      title: 'Datum osnivanja (English)',
+      type: 'string',
+      group: 'company',
+    }),
+    defineField({
+      name: 'managementEn',
+      title: 'Uprava (English)',
       type: 'string',
       group: 'company',
     }),

@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
+import { useLanguage, type Language } from "./language-provider";
 
 type NavItem = {
   href: string;
-  label: string;
+  label: Record<Language, string>;
   icon: ReactNode;
   exact?: boolean;
 };
@@ -26,7 +27,7 @@ const iconProps = {
 const NAV_ITEMS: NavItem[] = [
   {
     href: "/",
-    label: "Naslovna",
+    label: { hr: "Naslovna", en: "Home" },
     exact: true,
     icon: (
       <svg {...iconProps}>
@@ -38,7 +39,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/prodaja-stanova",
-    label: "Prodaja stanova",
+    label: { hr: "Prodaja stanova", en: "Apartments for sale" },
     icon: (
       <svg {...iconProps}>
         <circle cx="8" cy="15" r="4" />
@@ -50,7 +51,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/izgradeni-objekti",
-    label: "Izgrađeni objekti",
+    label: { hr: "Izgrađeni objekti", en: "Completed projects" },
     icon: (
       <svg {...iconProps}>
         <path d="M4 20V8l6-3v15" />
@@ -62,7 +63,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/o-nama",
-    label: "O nama",
+    label: { hr: "O nama", en: "About us" },
     icon: (
       <svg {...iconProps}>
         <path d="M12 3 5 6v5.5c0 4.2 2.9 7.8 7 9.5 4.1-1.7 7-5.3 7-9.5V6l-7-3Z" />
@@ -75,6 +76,7 @@ const NAV_ITEMS: NavItem[] = [
 export default function SiteHeader() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { language, setLanguage } = useLanguage();
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -90,7 +92,11 @@ export default function SiteHeader() {
         <Link
           className="brand"
           href="/"
-          aria-label="Petrušić gradnja — naslovna"
+          aria-label={
+            language === "en"
+              ? "Petrušić gradnja — home"
+              : "Petrušić gradnja — naslovna"
+          }
           onClick={closeMenu}
         >
           <span className="brand__mark" aria-hidden="true">
@@ -105,7 +111,15 @@ export default function SiteHeader() {
         <button
           className={`menu-toggle${isMenuOpen ? " is-active" : ""}`}
           type="button"
-          aria-label={isMenuOpen ? "Zatvori navigaciju" : "Otvori navigaciju"}
+          aria-label={
+            language === "en"
+              ? isMenuOpen
+                ? "Close navigation"
+                : "Open navigation"
+              : isMenuOpen
+                ? "Zatvori navigaciju"
+                : "Otvori navigaciju"
+          }
           aria-expanded={isMenuOpen}
           aria-controls="primary-navigation"
           onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
@@ -117,7 +131,7 @@ export default function SiteHeader() {
         <nav
           className={`primary-nav${isMenuOpen ? " is-open" : ""}`}
           id="primary-navigation"
-          aria-label="Glavna navigacija"
+          aria-label={language === "en" ? "Main navigation" : "Glavna navigacija"}
         >
           <ul className="primary-nav__list">
             {NAV_ITEMS.map((item) => {
@@ -132,7 +146,7 @@ export default function SiteHeader() {
                     onClick={closeMenu}
                   >
                     <span className="nav-link__icon">{item.icon}</span>
-                    <span className="nav-link__label">{item.label}</span>
+                    <span className="nav-link__label">{item.label[language]}</span>
                     <span className="nav-link__arrow" aria-hidden="true">
                       →
                     </span>
@@ -146,9 +160,26 @@ export default function SiteHeader() {
               <rect x="3" y="5.5" width="18" height="13" rx="1.5" />
               <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
             </svg>
-            Kontakt
+            {language === "en" ? "Contact" : "Kontakt"}
           </Link>
         </nav>
+        <div
+          className="language-switch"
+          role="group"
+          aria-label={language === "en" ? "Site language" : "Jezik stranice"}
+        >
+          {(["hr", "en"] as const).map((option: Language) => (
+            <button
+              className="language-switch__button"
+              type="button"
+              key={option}
+              aria-pressed={language === option}
+              onClick={() => setLanguage(option)}
+            >
+              {option.toUpperCase()}
+            </button>
+          ))}
+        </div>
       </div>
     </header>
   );

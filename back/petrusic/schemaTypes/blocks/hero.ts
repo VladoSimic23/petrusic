@@ -72,6 +72,29 @@ export const hero = defineType({
       description: 'Npr. "Otkrijte više" koja vodi na sljedeću sekciju.',
       type: 'callToAction',
     }),
+    defineField({
+      name: 'english',
+      title: 'English translation',
+      type: 'object',
+      fields: [
+        defineField({name: 'eyebrow', title: 'Eyebrow', type: 'string'}),
+        defineField({name: 'title', title: 'Title', type: 'string'}),
+        defineField({name: 'highlightedTitle', title: 'Highlighted title', type: 'string'}),
+        defineField({name: 'description', title: 'Description', type: 'text', rows: 3}),
+        defineField({name: 'primaryCta', title: 'Primary button', type: 'callToAction'}),
+        defineField({
+          name: 'stat',
+          title: 'Featured statistic',
+          type: 'object',
+          fields: [
+            defineField({name: 'value', title: 'Value', type: 'string'}),
+            defineField({name: 'label', title: 'Label', type: 'string'}),
+          ],
+        }),
+        defineField({name: 'footerNote', title: 'Footer note', type: 'string'}),
+        defineField({name: 'scrollLink', title: 'Scroll link', type: 'callToAction'}),
+      ],
+    }),
   ],
   preview: {
     select: {title: 'title', subtitle: 'highlightedTitle', media: 'backgroundImage'},

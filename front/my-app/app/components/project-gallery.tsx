@@ -10,6 +10,7 @@ import {
   type TouchEvent,
 } from "react";
 import type { ProjectImage } from "../../sanity/lib/projects";
+import { useLanguage } from "./language-provider";
 
 type GalleryImage = ProjectImage & { _key: string };
 
@@ -28,9 +29,11 @@ function focalPoint(image: GalleryImage): CSSProperties | undefined {
 export default function ProjectGallery({
   images,
   title,
+  englishTitle,
 }: {
   images: GalleryImage[];
   title: string;
+  englishTitle?: string;
 }) {
   const railRef = useRef<HTMLUListElement>(null);
   const thumbRef = useRef<HTMLSpanElement>(null);
@@ -41,6 +44,9 @@ export default function ProjectGallery({
   const [railIndex, setRailIndex] = useState(0);
   const [scrollable, setScrollable] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const { language } = useLanguage();
+  const isEnglish = language === "en";
+  const displayTitle = isEnglish ? englishTitle || title : title;
 
   const count = images.length;
   const isOpen = lightboxIndex !== null;
@@ -166,11 +172,15 @@ export default function ProjectGallery({
   };
 
   return (
-    <section className="project-gallery" id="galerija" aria-label="Galerija fotografija">
+    <section
+      className="project-gallery"
+      id="galerija"
+      aria-label={isEnglish ? "Photo gallery" : "Galerija fotografija"}
+    >
       <div className="section-heading project-detail__wrap project-gallery__head">
         <div>
-          <p className="eyebrow eyebrow--dark">Galerija</p>
-          <h2>Pogledajte izbliza</h2>
+          <p className="eyebrow eyebrow--dark">{isEnglish ? "Gallery" : "Galerija"}</p>
+          <h2>{isEnglish ? "Take a closer look" : "Pogledajte izbliza"}</h2>
         </div>
         {scrollable ? (
           <div className="project-gallery__controls">
@@ -185,7 +195,7 @@ export default function ProjectGallery({
         ref={railRef}
         className="project-gallery__rail"
         role="list"
-        aria-label="Fotografije projekta"
+        aria-label={isEnglish ? "Project photos" : "Fotografije projekta"}
         onPointerDown={onPointerDown}
       >
         {images.map((image, index) => (
@@ -200,11 +210,19 @@ export default function ProjectGallery({
               onClick={() => {
                 if (!dragRef.current.moved) setLightboxIndex(index);
               }}
-              aria-label={`Otvori fotografiju ${index + 1} od ${count}`}
+              aria-label={
+                isEnglish
+                  ? `Open photo ${index + 1} of ${count}`
+                  : `Otvori fotografiju ${index + 1} od ${count}`
+              }
             >
               <Image
                 src={image.src}
-                alt={image.alt || title}
+                alt={
+                  isEnglish
+                    ? image.englishAlt || title
+                    : image.alt || title
+                }
                 fill
                 sizes="(max-width: 680px) 84vw, 740px"
                 draggable={false}
@@ -229,7 +247,7 @@ export default function ProjectGallery({
           className="project-lightbox"
           role="dialog"
           aria-modal="true"
-          aria-label={`${title} — galerija slika`}
+          aria-label={`${displayTitle} — ${isEnglish ? "photo gallery" : "galerija slika"}`}
           onClick={(event) => {
             if (event.target === event.currentTarget) setLightboxIndex(null);
           }}
@@ -241,26 +259,40 @@ export default function ProjectGallery({
             type="button"
             className="project-lightbox__close"
             onClick={() => setLightboxIndex(null)}
-            aria-label="Zatvori galeriju"
+            aria-label={isEnglish ? "Close gallery" : "Zatvori galeriju"}
           >
             <span aria-hidden="true">×</span>
           </button>
           <div className="project-lightbox__image" key={activeImage._key}>
             <Image
               src={activeImage.src}
-              alt={activeImage.alt || title}
+              alt={
+                isEnglish
+                  ? activeImage.englishAlt || title
+                  : activeImage.alt || title
+              }
               fill
               sizes="(max-width: 760px) 100vw, 1200px"
             />
           </div>
           <span
             className="project-gallery__counter project-lightbox__counter"
-            aria-label={`Fotografija ${lightboxIndex + 1} od ${count}`}
+            aria-label={
+              isEnglish
+                ? `Photo ${lightboxIndex + 1} of ${count}`
+                : `Fotografija ${lightboxIndex + 1} od ${count}`
+            }
           >
             {lightboxIndex + 1}/{count}
           </span>
-          {activeImage.caption ? (
-            <p className="project-lightbox__caption">{activeImage.caption}</p>
+          {(isEnglish
+            ? activeImage.englishCaption || activeImage.caption
+            : activeImage.caption) ? (
+            <p className="project-lightbox__caption">
+              {isEnglish
+                ? activeImage.englishCaption || activeImage.caption
+                : activeImage.caption}
+            </p>
           ) : null}
         </div>
       ) : null}

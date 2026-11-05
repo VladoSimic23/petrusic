@@ -37,6 +37,12 @@ export const stats = defineType({
               type: 'string',
               validation: (rule) => rule.required(),
             }),
+            defineField({
+              name: 'labelEn',
+              title: 'Opis (English)',
+              description: 'Engleski prijevod opisa brojke.',
+              type: 'string',
+            }),
           ],
           preview: {
             select: {value: 'value', suffix: 'suffix', label: 'label'},

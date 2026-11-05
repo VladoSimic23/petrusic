@@ -226,6 +226,30 @@ button {
   gap: clamp(18px, 2vw, 30px);
 }
 
+.language-switch {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid rgb(223 197 161 / 30%);
+}
+
+.language-switch__button {
+  min-width: 36px;
+  min-height: 32px;
+  border: 0;
+  background: transparent;
+  color: rgb(255 255 255 / 70%);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.language-switch__button[aria-pressed="true"] {
+  background: rgb(223 197 161 / 18%);
+  color: var(--gold-light);
+}
+
 .primary-nav__list {
   display: flex;
   align-items: center;
@@ -452,6 +476,13 @@ button {
 
 .menu-toggle {
   display: none;
+}
+
+.language-switch {
+  position: absolute;
+  top: 50%;
+  right: 82px;
+  transform: translateY(-50%);
 }
 
 .hero__content {
@@ -2980,7 +3011,7 @@ button {
 
   .eyebrow {
     gap: 9px;
-    font-size: 9px;
+    font-size: 11px;
     letter-spacing: 0.14em;
   }
 
@@ -4650,7 +4681,7 @@ button {
 
 .project-detail__story {
   display: grid;
-  grid-template-columns: minmax(0, 860px);
+  /* grid-template-columns: minmax(0, 860px); */
   justify-content: center;
   padding: clamp(54px, 8vw, 110px) 0;
   border-top: 1px solid rgb(255 255 255 / 12%);
@@ -5598,7 +5629,9 @@ button {
   color: var(--foreground);
   font-weight: 500;
   overflow-wrap: anywhere;
-  transition: color 180ms ease, transform 180ms ease;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
 }
 
 .site-footer__column a::after {
@@ -5607,7 +5640,9 @@ button {
   font-size: 11px;
   opacity: 0;
   transform: translate(-3px, 3px);
-  transition: opacity 180ms ease, transform 180ms ease;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
 }
 
 .site-footer__column a:hover,
@@ -5650,7 +5685,10 @@ button {
   border: 1px solid rgb(255 255 255 / 12%);
   border-radius: 999px;
   color: var(--gold-light);
-  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
 }
 
 .site-footer__bar a:hover,

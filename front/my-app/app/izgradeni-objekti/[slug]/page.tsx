@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { PortableText } from "@portabletext/react";
 import BuildingCard from "../../components/building-card";
 import ProjectGallery from "../../components/project-gallery";
-import { portableComponents } from "../../components/project-body";
-import { messagingNumber, phoneHref } from "../../components/contact-section";
+import { messagingNumber, phoneHref } from "../../components/contact-utils";
 import {
   getCompletedBuildingBySlug,
   getCompletedBuildings,
 } from "../../../sanity/lib/buildings";
 import { getFooterContact } from "../../../sanity/lib/footer";
+import {
+  ProjectBodyContent,
+  ProjectHeroImage,
+  ProjectText,
+} from "../../components/project-localization";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -81,27 +83,52 @@ async function BuildingContent({ params }: PageProps) {
   const { hotspot } = building.image;
 
   const facts = [
-    { label: "Lokacija", value: building.location },
+    {
+      label: "Lokacija",
+      labelEn: "Location",
+      value: building.location,
+      valueEn: building.english?.location || building.location,
+    },
     building.completionYear
-      ? { label: "Završeno", value: String(building.completionYear) }
+      ? { label: "Završeno", labelEn: "Completed", value: String(building.completionYear) }
       : null,
     building.startYear
-      ? { label: "Početak gradnje", value: String(building.startYear) }
+      ? { label: "Početak gradnje", labelEn: "Construction started", value: String(building.startYear) }
       : null,
     building.apartmentCount
-      ? { label: "Stanova", value: String(building.apartmentCount) }
+      ? { label: "Stanova", labelEn: "Apartments", value: String(building.apartmentCount) }
       : null,
-    building.floors ? { label: "Etaže", value: building.floors } : null,
+    building.floors
+      ? {
+          label: "Etaže",
+          labelEn: "Floors",
+          value: building.floors,
+          valueEn: building.floorsEn || building.floors,
+        }
+      : null,
     building.totalArea
       ? {
           label: "Ukupna površina",
+          labelEn: "Total area",
           value: `${building.totalArea.toLocaleString("hr-HR")} m²`,
+          valueEn: `${building.totalArea.toLocaleString("en-US")} m²`,
         }
       : null,
     building.parkingSpaces
-      ? { label: "Parkirna mjesta", value: String(building.parkingSpaces) }
+      ? {
+          label: "Parkirna mjesta",
+          labelEn: "Parking spaces",
+          value: String(building.parkingSpaces),
+        }
       : null,
-    building.allSold ? { label: "Status", value: "Svi stanovi prodani" } : null,
+    building.allSold
+      ? {
+          label: "Status",
+          labelEn: "Status",
+          value: "Svi stanovi prodani",
+          valueEn: "All apartments sold",
+        }
+      : null,
   ].filter((fact) => fact !== null);
 
   const jsonLd = {
@@ -126,40 +153,57 @@ async function BuildingContent({ params }: PageProps) {
         aria-labelledby="building-title"
       >
         <div className="project-detail__hero-media">
-          <Image
+          <ProjectHeroImage
             src={building.image.src}
-            alt={building.image.alt || building.title}
-            fill
-            loading="eager"
-            fetchPriority="high"
-            sizes="100vw"
-            style={
-              hotspot
-                ? { objectPosition: `${hotspot.x * 100}% ${hotspot.y * 100}%` }
-                : undefined
-            }
+            croatianAlt={building.image.alt}
+            englishAlt={building.image.altEn}
+            fallbackAlt={building.title}
+            hotspot={hotspot}
           />
         </div>
         <div className="project-detail__wrap project-detail__hero-inner">
           <Link className="project-detail__back" href="/izgradeni-objekti">
-            <span aria-hidden="true">←</span> Svi objekti
+            <span aria-hidden="true">←</span>{" "}
+            <ProjectText croatian="Svi objekti" english="All buildings" />
           </Link>
           <div className="project-detail__hero-copy">
             <p className="eyebrow">
-              Petrušić gradnja · Izgrađeni objekti
+              <ProjectText
+                croatian="Petrušić gradnja · Izgrađeni objekti"
+                english="Petrušić gradnja · Completed buildings"
+              />
               {building.completionYear ? ` · ${building.completionYear}` : ""}
             </p>
-            <h1 id="building-title">{building.title}</h1>
+            <ProjectText
+              element="h1"
+              id="building-title"
+              croatian={building.title}
+              english={building.english?.title || building.title}
+            />
             {building.description ? (
-              <p className="project-detail__lead">{building.description}</p>
+              <ProjectText
+                element="p"
+                className="project-detail__lead"
+                croatian={building.description}
+                english={building.english?.description || building.description}
+              />
             ) : null}
             <div className="project-detail__actions">
               {building.allSold ? (
-                <span className="built-detail__badge">Svi stanovi prodani</span>
+                <span className="built-detail__badge">
+                  <ProjectText
+                    croatian="Svi stanovi prodani"
+                    english="All apartments sold"
+                  />
+                </span>
               ) : null}
               {gallery.length > 1 ? (
                 <a className="project-detail__ghost" href="#galerija">
-                  Pogledaj galeriju <span aria-hidden="true">↓</span>
+                  <ProjectText
+                    croatian="Pogledaj galeriju"
+                    english="View gallery"
+                  />{" "}
+                  <span aria-hidden="true">↓</span>
                 </a>
               ) : null}
             </div>
@@ -171,8 +215,16 @@ async function BuildingContent({ params }: PageProps) {
         <dl className="project-detail__facts built-detail__facts">
           {facts.map((fact) => (
             <div key={fact.label}>
-              <dt>{fact.label}</dt>
-              <dd>{fact.value}</dd>
+              <ProjectText
+                element="dt"
+                croatian={fact.label}
+                english={fact.labelEn || fact.label}
+              />
+              <ProjectText
+                element="dd"
+                croatian={fact.value}
+                english={("valueEn" in fact ? fact.valueEn : undefined) || fact.value}
+              />
             </div>
           ))}
         </dl>
@@ -180,27 +232,39 @@ async function BuildingContent({ params }: PageProps) {
 
       {building.highlights.length ? (
         <div className="project-detail__wrap">
-          <ul className="built-detail__highlights" aria-label="Karakteristike">
-            {building.highlights.map((highlight) => (
-              <li key={highlight}>{highlight}</li>
+          <ul
+            className="built-detail__highlights"
+            aria-label="Building highlights"
+          >
+            {building.highlights.map((highlight, index) => (
+              <li key={highlight}>
+                <ProjectText
+                  croatian={highlight}
+                  english={building.highlightsEn[index] || highlight}
+                />
+              </li>
             ))}
           </ul>
         </div>
       ) : null}
 
       {gallery.length > 1 ? (
-        <ProjectGallery images={gallery} title={building.title} />
+        <ProjectGallery
+          images={gallery}
+          title={building.title}
+          englishTitle={building.english?.title}
+        />
       ) : null}
 
       {building.body.length ? (
         <section
           className="project-detail__story project-detail__wrap"
-          aria-label="O objektu"
+          aria-label="About this building"
         >
           <div className="project-body">
-            <PortableText
-              value={building.body}
-              components={portableComponents}
+            <ProjectBodyContent
+              croatian={building.body}
+              english={building.bodyEn}
             />
           </div>
         </section>
@@ -212,16 +276,31 @@ async function BuildingContent({ params }: PageProps) {
           aria-labelledby="building-contact-title"
         >
           <div className="project-detail__contact-copy">
-            <p className="eyebrow">Tražite svoj novi dom?</p>
-            <h2 id="building-contact-title">Pogledajte aktualne projekte</h2>
-            <p>
-              Ovakvu kvalitetu gradimo i danas. Pogledajte stanove koji su
-              trenutno u ponudi ili nam se javite za više informacija.
+            <p className="eyebrow">
+              <ProjectText
+                croatian="Tražite svoj novi dom?"
+                english="Looking for your new home?"
+              />
             </p>
+            <ProjectText
+              element="h2"
+              id="building-contact-title"
+              croatian="Pogledajte aktualne projekte"
+              english="Explore our current projects"
+            />
+            <ProjectText
+              element="p"
+              croatian="Ovakvu kvalitetu gradimo i danas. Pogledajte stanove koji su trenutno u ponudi ili nam se javite za više informacija."
+              english="We continue to build to the same high standards. Explore apartments currently available or contact us for more information."
+            />
           </div>
           <div className="project-detail__contact-actions">
             <Link className="button button--primary" href="/prodaja-stanova">
-              Stanovi u prodaji <span aria-hidden="true">↗</span>
+              <ProjectText
+                croatian="Stanovi u prodaji"
+                english="Apartments for sale"
+              />{" "}
+              <span aria-hidden="true">↗</span>
             </Link>
             {contact.phone ? (
               <a
@@ -252,11 +331,19 @@ async function BuildingContent({ params }: PageProps) {
         >
           <div className="section-heading">
             <div>
-              <p className="eyebrow eyebrow--dark">Istražite još</p>
-              <h2 id="more-buildings-title">Ostali izgrađeni objekti</h2>
+              <p className="eyebrow eyebrow--dark">
+                <ProjectText croatian="Istražite još" english="Explore more" />
+              </p>
+              <ProjectText
+                element="h2"
+                id="more-buildings-title"
+                croatian="Ostali izgrađeni objekti"
+                english="Other completed buildings"
+              />
             </div>
             <Link className="project-detail__all" href="/izgradeni-objekti">
-              Svi objekti <span aria-hidden="true">→</span>
+              <ProjectText croatian="Svi objekti" english="All buildings" />{" "}
+              <span aria-hidden="true">→</span>
             </Link>
           </div>
           <ul className="sale-project-grid">

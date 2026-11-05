@@ -7,6 +7,7 @@ export type AboutPageContent = {
   heroImage?: {
     src: string;
     alt?: string;
+    englishAlt?: string;
     hotspot?: { x: number; y: number };
   };
   storyTitle: string;
@@ -15,6 +16,7 @@ export type AboutPageContent = {
   storyImage?: {
     src: string;
     alt?: string;
+    englishAlt?: string;
     hotspot?: { x: number; y: number };
   };
   stats: { _key: string; value: number; suffix?: string; label: string }[];
@@ -32,8 +34,30 @@ export type AboutPageContent = {
     vat: string;
     founded: string;
     management: string;
+    english?: {
+      name?: string;
+      headquarters?: string;
+      founded?: string;
+      management?: string;
+    };
   };
   seo: { title?: string; description?: string; image?: string };
+  english?: {
+    eyebrow?: string;
+    heading?: string;
+    highlightedHeading?: string;
+    lead?: string;
+    storyTitle?: string;
+    storyParagraphs?: string[];
+    stats?: { label: string }[];
+    mission?: string;
+    vision?: string;
+    reasonsTitle?: string;
+    reasons?: { title: string; description: string }[];
+    servicesTitle?: string;
+    servicesIntro?: string;
+    services?: { title: string; description: string }[];
+  };
 };
 
 // Used for every field the CMS document leaves empty.

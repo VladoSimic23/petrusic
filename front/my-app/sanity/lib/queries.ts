@@ -19,14 +19,22 @@ export const HOME_PAGE_QUERY = defineQuery(`*[_id == "homePage"][0]{
     },
     stat{value, label},
     footerNote,
-    scrollLink{label, href}
+    scrollLink{label, href},
+    "english": english{
+      eyebrow, title, highlightedTitle, description,
+      primaryCta{label, href},
+      stat{value, label},
+      footerNote,
+      scrollLink{label, href}
+    }
   },
   "stats": sections[_type == "stats"][0]{
     "items": items[]{
       _key,
       value,
       suffix,
-      label
+      label,
+      labelEn
     }
   },
   "featuredProjects": sections[_type == "featuredProjects"][0]{
@@ -40,11 +48,20 @@ export const HOME_PAGE_QUERY = defineQuery(`*[_id == "homePage"][0]{
       "slug": slug.current,
       location,
       completion,
+      description,
+      "english": english{title, location, completion},
       "image": image{
         "src": asset->url,
         "alt": alt,
+        "englishAlt": englishAlt,
         "hotspot": hotspot{x, y}
       }
+    },
+    "english": english{
+      eyebrow,
+      title,
+      cardCtaLabel,
+      viewAllLink{label, href}
     }
   },
   "completedProjects": sections[_type == "completedProjects"][0]{
@@ -54,14 +71,18 @@ export const HOME_PAGE_QUERY = defineQuery(`*[_id == "homePage"][0]{
     "projects": projects[@->_type == "completedBuilding"]->{
       _id,
       title,
+      titleEn,
       "slug": slug.current,
       location,
+      locationEn,
       completionYear,
       apartmentCount,
       shortDescription,
+      shortDescriptionEn,
       "image": image{
         "src": asset->url,
         "alt": alt,
+        altEn,
         "hotspot": hotspot{x, y}
       }
     }
@@ -73,30 +94,47 @@ export const HOME_PAGE_QUERY = defineQuery(`*[_id == "homePage"][0]{
     "image": image{
       "src": asset->url,
       "alt": alt,
+      "englishAlt": englishAlt,
       "caption": caption,
+      "englishCaption": englishCaption,
       "hotspot": hotspot{x, y}
     },
-    cta{label, href}
+    cta{label, href},
+    "english": english{
+      eyebrow,
+      title,
+      description,
+      cta{label, href}
+    }
   },
   "faq": sections[_type == "faq"][0]{
     eyebrow,
+    eyebrowEn,
     title,
+    titleEn,
     description,
-    "items": items[]{_key, question, answer},
-    cta{text, link{label, href}}
+    descriptionEn,
+    "items": items[]{_key, question, answer, questionEn, answerEn},
+    cta{text, textEn, link{label, href}, linkLabelEn}
   },
   "contact": sections[_type == "contact"][0]{
     eyebrow,
+    eyebrowEn,
     title,
+    titleEn,
     description,
+    descriptionEn,
     email,
     phone,
     whatsapp,
     viber,
     address,
+    addressEn,
     officeHours,
+    officeHoursEn,
     mapUrl,
-    responseNote
+    responseNote,
+    responseNoteEn
   }
 }`);
 
@@ -106,9 +144,12 @@ const PROJECT_CARD_PROJECTION = `{
   "slug": slug.current,
   location,
   completion,
+  description,
+  "english": english{title, location, completion},
   "image": image{
     "src": asset->url,
     alt,
+    englishAlt,
     "hotspot": hotspot{x, y}
   }
 }`;
@@ -125,9 +166,28 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(`*[
   "slug": slug.current,
   location,
   completion,
+  description,
+  "english": english{
+    title,
+    location,
+    completion,
+    description,
+    body[]{
+      ...,
+      _type == "image" => {
+        _key,
+        _type,
+        "src": asset->url,
+        alt,
+        caption,
+        "hotspot": hotspot{x, y}
+      }
+    }
+  },
   "image": image{
     "src": asset->url,
     alt,
+    englishAlt,
     "hotspot": hotspot{x, y}
   },
   "gallery": gallery[]{
@@ -135,6 +195,8 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(`*[
     "src": asset->url,
     alt,
     caption,
+    englishAlt,
+    englishCaption,
     "hotspot": hotspot{x, y}
   },
   body[]{

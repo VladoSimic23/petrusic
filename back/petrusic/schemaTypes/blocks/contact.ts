@@ -14,11 +14,21 @@ export const contact = defineType({
       initialValue: 'Tu smo za vas',
     }),
     defineField({
+      name: 'eyebrowEn',
+      title: 'Nadnaslov (English)',
+      type: 'string',
+    }),
+    defineField({
       name: 'title',
       title: 'Naslov',
       type: 'string',
       initialValue: 'Razgovarajmo o vašem novom domu',
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'titleEn',
+      title: 'Naslov (English)',
+      type: 'string',
     }),
     defineField({
       name: 'description',
@@ -28,6 +38,12 @@ export const contact = defineType({
       initialValue:
         'Naš tim pomoći će vam pronaći odgovore i informacije o projektima koji vas zanimaju.',
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'descriptionEn',
+      title: 'Uvodni tekst (English)',
+      type: 'text',
+      rows: 3,
     }),
     defineField({
       name: 'email',
@@ -61,9 +77,20 @@ export const contact = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'addressEn',
+      title: 'Adresa (English)',
+      type: 'string',
+    }),
+    defineField({
       name: 'officeHours',
       title: 'Radno vrijeme',
       description: 'Možete unijeti i više redaka, npr. Pon–pet 08:00–16:00.',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'officeHoursEn',
+      title: 'Radno vrijeme (English)',
       type: 'text',
       rows: 3,
     }),
@@ -92,6 +119,11 @@ export const contact = defineType({
       description: 'Opcionalna poruka ispod kontaktnih podataka.',
       type: 'string',
       initialValue: 'Veselimo se vašem javljanju.',
+    }),
+    defineField({
+      name: 'responseNoteEn',
+      title: 'Kratka napomena (English)',
+      type: 'string',
     }),
   ],
   validation: (rule) =>

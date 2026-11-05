@@ -11,6 +11,7 @@ import {
   type MouseEvent,
   type TouchEvent,
 } from "react";
+import { useLanguage } from "./language-provider";
 
 export type ProjectCard = {
   _id: string;
@@ -18,6 +19,11 @@ export type ProjectCard = {
   slug: string;
   location?: string;
   completion?: string;
+  english?: {
+    title?: string;
+    location?: string;
+    completion?: string;
+  };
   image: {
     src: string;
     alt?: string;
@@ -31,6 +37,12 @@ export type ProjectsContent = {
   cardCtaLabel: string;
   viewAllLink?: { label: string; href: string };
   projects: ProjectCard[];
+  english?: {
+    eyebrow?: string;
+    title?: string;
+    cardCtaLabel?: string;
+    viewAllLink?: { label?: string; href?: string };
+  };
 };
 
 const STORY_DURATION_MS = 7000;
@@ -44,7 +56,17 @@ export default function ProjectsSection({
   cardCtaLabel,
   viewAllLink,
   projects,
+  english,
 }: ProjectsContent) {
+  const { language } = useLanguage();
+  const isEnglish = language === "en";
+  eyebrow = isEnglish ? english?.eyebrow || eyebrow : eyebrow;
+  title = isEnglish ? english?.title || title : title;
+  cardCtaLabel = isEnglish ? english?.cardCtaLabel || cardCtaLabel : cardCtaLabel;
+  viewAllLink =
+    isEnglish && english?.viewAllLink?.label && english.viewAllLink.href
+      ? { label: english.viewAllLink.label, href: english.viewAllLink.href }
+      : viewAllLink;
   const count = projects.length;
   const [activeProject, setActiveProject] = useState(0);
   const [autoplayAllowed, setAutoplayAllowed] = useState(false);
@@ -187,7 +209,7 @@ export default function ProjectsSection({
           <Link
             className="projects-showcase__image-link"
             href={`/prodaja-stanova/${project.slug}`}
-            aria-label={`Pogledaj projekt ${project.title}`}
+            aria-label={`${isEnglish ? "View project" : "Pogledaj projekt"} ${project.title}`}
             onClick={onImageClick}
             draggable={false}
           >
@@ -208,7 +230,8 @@ export default function ProjectsSection({
               />
             </span>
             <span className="projects-showcase__image-label">
-              Aktualno u ponudi <span aria-hidden="true">↗</span>
+              {isEnglish ? "Currently available" : "Aktualno u ponudi"}{" "}
+              <span aria-hidden="true">↗</span>
             </span>
           </Link>
 
@@ -261,30 +284,33 @@ export default function ProjectsSection({
 
           {hasMany && seen ? (
             <span className="projects-showcase__swipe-hint" aria-hidden="true">
-              <span>‹</span> Povuci <span>›</span>
+              <span>‹</span> {isEnglish ? "Swipe" : "Povuci"} <span>›</span>
             </span>
           ) : null}
         </div>
 
         <div className="projects-showcase__details" key={project._id}>
-          <p className="eyebrow eyebrow--dark">Projekt {pad(activeProject + 1)}</p>
-          <h3>{project.title}</h3>
+          <p className="eyebrow eyebrow--dark">
+            {isEnglish ? "Project" : "Projekt"} {pad(activeProject + 1)}
+          </p>
+          <h3>{isEnglish ? project.english?.title || project.title : project.title}</h3>
           <p className="projects-showcase__description">
-            Upoznajte projekt, pogledajte galeriju fotografija i saznajte više o
-            mogućnostima koje nudi.
+            {isEnglish
+              ? "Discover the project, browse the photo gallery, and learn more about the opportunities it offers."
+              : "Upoznajte projekt, pogledajte galeriju fotografija i saznajte više o mogućnostima koje nudi."}
           </p>
 
           <dl className="projects-showcase__meta">
             {project.location ? (
               <div>
-                <dt>Lokacija</dt>
-                <dd>{project.location}</dd>
+                <dt>{isEnglish ? "Location" : "Lokacija"}</dt>
+                <dd>{isEnglish ? project.english?.location || project.location : project.location}</dd>
               </div>
             ) : null}
             {project.completion ? (
               <div>
-                <dt>Planirani završetak</dt>
-                <dd>{project.completion}</dd>
+                <dt>{isEnglish ? "Estimated completion" : "Planirani završetak"}</dt>
+                <dd>{isEnglish ? project.english?.completion || project.completion : project.completion}</dd>
               </div>
             ) : null}
           </dl>
@@ -303,7 +329,7 @@ export default function ProjectsSection({
           ref={railRef}
           className="projects-showcase__selector"
           role="group"
-          aria-label="Odaberi projekt"
+          aria-label={isEnglish ? "Select a project" : "Odaberi projekt"}
         >
           {projects.map((item, index) => {
             const isActive = index === activeProject;
@@ -336,8 +362,10 @@ export default function ProjectsSection({
                   </span>
                 </span>
                 <span className="projects-showcase__option-copy">
-                  <span>{item.title}</span>
-                  {item.location ? <small>{item.location}</small> : null}
+                  <span>{isEnglish ? item.english?.title || item.title : item.title}</span>
+                  {item.location ? (
+                    <small>{isEnglish ? item.english?.location || item.location : item.location}</small>
+                  ) : null}
                 </span>
                 <span
                   className="projects-showcase__option-arrow"

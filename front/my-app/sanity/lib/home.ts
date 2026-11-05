@@ -68,6 +68,29 @@ export async function getHomePage(): Promise<HomePageData | null> {
               scroll?.label && scroll.href
                 ? { label: scroll.label, href: scroll.href }
                 : undefined,
+            english: hero.english
+              ? {
+                  eyebrow: hero.english.eyebrow ?? undefined,
+                  title: hero.english.title ?? undefined,
+                  highlightedTitle: hero.english.highlightedTitle ?? undefined,
+                  description: hero.english.description ?? undefined,
+                  primaryCta:
+                    hero.english.primaryCta?.label && hero.english.primaryCta.href
+                      ? { label: hero.english.primaryCta.label, href: hero.english.primaryCta.href }
+                      : undefined,
+                  stat: hero.english.stat
+                    ? {
+                        value: hero.english.stat.value ?? undefined,
+                        label: hero.english.stat.label ?? undefined,
+                      }
+                    : undefined,
+                  footerNote: hero.english.footerNote ?? undefined,
+                  scrollLink:
+                    hero.english.scrollLink?.label && hero.english.scrollLink.href
+                      ? { label: hero.english.scrollLink.label, href: hero.english.scrollLink.href }
+                      : undefined,
+                }
+              : undefined,
           }
         : undefined,
     stats: mapStats(data.stats?.items),
@@ -83,16 +106,22 @@ function mapContact(
   block:
     | {
         eyebrow: string | null;
+        eyebrowEn: string | null;
         title: string | null;
+        titleEn: string | null;
         description: string | null;
+        descriptionEn: string | null;
         email: string | null;
         phone: string | null;
         whatsapp: string | null;
         viber: string | null;
         address: string | null;
+        addressEn: string | null;
         officeHours: string | null;
+        officeHoursEn: string | null;
         mapUrl: string | null;
         responseNote: string | null;
+        responseNoteEn: string | null;
       }
     | null
     | undefined,
@@ -111,6 +140,14 @@ function mapContact(
     officeHours: block.officeHours ?? undefined,
     mapUrl: block.mapUrl ?? undefined,
     responseNote: block.responseNote ?? undefined,
+    english: {
+      eyebrow: block.eyebrowEn ?? undefined,
+      title: block.titleEn ?? undefined,
+      description: block.descriptionEn ?? undefined,
+      address: block.addressEn ?? undefined,
+      officeHours: block.officeHoursEn ?? undefined,
+      responseNote: block.responseNoteEn ?? undefined,
+    },
   };
 }
 
@@ -123,10 +160,18 @@ function mapAbout(
         image: {
           src: string | null;
           alt: string | null;
+          englishAlt: string | null;
           caption: string | null;
+          englishCaption: string | null;
           hotspot: { x: number | null; y: number | null } | null;
         } | null;
         cta: { label: string | null; href: string | null } | null;
+        english: {
+          eyebrow: string | null;
+          title: string | null;
+          description: string | null;
+          cta: { label: string | null; href: string | null } | null;
+        } | null;
       }
     | null
     | undefined,
@@ -143,7 +188,9 @@ function mapAbout(
       ? {
           src: block.image.src,
           alt: block.image.alt ?? undefined,
+          englishAlt: block.image.englishAlt ?? undefined,
           caption: block.image.caption ?? undefined,
+          englishCaption: block.image.englishCaption ?? undefined,
           hotspot:
             block.image.hotspot?.x != null && block.image.hotspot.y != null
               ? { x: block.image.hotspot.x, y: block.image.hotspot.y }
@@ -151,6 +198,17 @@ function mapAbout(
         }
       : undefined,
     cta: { label: block.cta.label, href: block.cta.href },
+    english: block.english
+      ? {
+          eyebrow: block.english.eyebrow ?? undefined,
+          title: block.english.title ?? undefined,
+          description: block.english.description ?? undefined,
+          cta:
+            block.english.cta?.label && block.english.cta.href
+              ? { label: block.english.cta.label, href: block.english.cta.href }
+              : undefined,
+        }
+      : undefined,
   };
 }
 
@@ -165,12 +223,19 @@ function mapFaq(
               _key: string;
               question: string | null;
               answer: string | null;
+              questionEn: string | null;
+              answerEn: string | null;
             }[]
           | null;
         cta: {
           text: string | null;
+          textEn: string | null;
           link: { label: string | null; href: string | null } | null;
+          linkLabelEn: string | null;
         } | null;
+        eyebrowEn: string | null;
+        titleEn: string | null;
+        descriptionEn: string | null;
       }
     | null
     | undefined,
@@ -185,6 +250,11 @@ function mapFaq(
   if (!items.length) return undefined;
 
   const link = block.cta?.link;
+  const englishItems = (block.items ?? []).map((item) => ({
+    _key: item._key,
+    question: item.questionEn ?? undefined,
+    answer: item.answerEn ?? undefined,
+  }));
   return {
     eyebrow: block.eyebrow ?? undefined,
     title: block.title,
@@ -197,6 +267,16 @@ function mapFaq(
             link: { label: link.label, href: link.href },
           }
         : undefined,
+    english: {
+      eyebrow: block.eyebrowEn ?? undefined,
+      title: block.titleEn ?? undefined,
+      description: block.descriptionEn ?? undefined,
+      items: englishItems,
+      cta: {
+        text: block.cta?.textEn ?? undefined,
+        linkLabel: block.cta?.linkLabelEn ?? undefined,
+      },
+    },
   };
 }
 
@@ -207,16 +287,30 @@ function mapProjects(
         title: string | null;
         cardCtaLabel: string | null;
         viewAllLink: { label: string | null; href: string | null } | null;
+        english: {
+          eyebrow: string | null;
+          title: string | null;
+          cardCtaLabel: string | null;
+          viewAllLink: { label: string | null; href: string | null } | null;
+        } | null;
         projects:
           | {
               _id: string;
               title: string | null;
+              titleEn: string | null;
               slug: string | null;
               location: string | null;
+              locationEn: string | null;
               completion: string | null;
+              english: {
+                title: string | null;
+                location: string | null;
+                completion: string | null;
+              } | null;
               image: {
                 src: string | null;
                 alt: string | null;
+                englishAlt: string | null;
                 hotspot: { x: number | null; y: number | null } | null;
               } | null;
             }[]
@@ -236,9 +330,17 @@ function mapProjects(
             slug: p.slug,
             location: p.location ?? undefined,
             completion: p.completion ?? undefined,
+            english: p.english
+              ? {
+                  title: p.english.title ?? undefined,
+                  location: p.english.location ?? undefined,
+                  completion: p.english.completion ?? undefined,
+                }
+              : undefined,
             image: {
               src: p.image.src,
               alt: p.image.alt ?? undefined,
+              englishAlt: p.image.englishAlt ?? undefined,
               hotspot:
                 p.image.hotspot?.x != null && p.image.hotspot.y != null
                   ? { x: p.image.hotspot.x, y: p.image.hotspot.y }
@@ -255,6 +357,20 @@ function mapProjects(
     cardCtaLabel: block.cardCtaLabel ?? "Pregledaj tlocrte",
     viewAllLink:
       link?.label && link.href ? { label: link.label, href: link.href } : undefined,
+    english: block.english
+      ? {
+          eyebrow: block.english.eyebrow ?? undefined,
+          title: block.english.title ?? undefined,
+          cardCtaLabel: block.english.cardCtaLabel ?? undefined,
+          viewAllLink:
+            block.english.viewAllLink?.label && block.english.viewAllLink.href
+              ? {
+                  label: block.english.viewAllLink.label,
+                  href: block.english.viewAllLink.href,
+                }
+              : undefined,
+        }
+      : undefined,
     projects,
   };
 }
@@ -266,6 +382,7 @@ function mapStats(
         value: number | null;
         suffix: string | null;
         label: string | null;
+        labelEn: string | null;
       }[]
     | null
     | undefined,
@@ -278,6 +395,7 @@ function mapStats(
             value: item.value,
             suffix: item.suffix ?? undefined,
             label: item.label,
+            labelEn: item.labelEn ?? undefined,
           },
         ]
       : [],
@@ -301,14 +419,18 @@ function mapReferences(
           | ({
               _id: string;
               title: string | null;
+              titleEn: string | null;
               slug: string | null;
               location: string | null;
+              locationEn: string | null;
               completionYear: number | null;
               apartmentCount: number | null;
               shortDescription: string | null;
+              shortDescriptionEn: string | null;
               image: {
                 src: string | null;
                 alt: string | null;
+                altEn: string | null;
                 hotspot: { x: number | null; y: number | null } | null;
               } | null;
             } | null)[]
@@ -327,12 +449,18 @@ function mapReferences(
             title: p.title,
             slug: p.slug,
             location: p.location ?? undefined,
+            english: {
+              title: p.titleEn ?? undefined,
+              location: p.locationEn ?? undefined,
+              description: p.shortDescriptionEn ?? undefined,
+            },
             completionYear: p.completionYear ?? undefined,
             apartmentCount: p.apartmentCount ?? undefined,
             description: p.shortDescription ?? undefined,
             image: {
               src: p.image.src,
               alt: p.image.alt ?? undefined,
+              altEn: p.image.altEn ?? undefined,
               hotspot:
                 p.image.hotspot?.x != null && p.image.hotspot.y != null
                   ? { x: p.image.hotspot.x, y: p.image.hotspot.y }

@@ -35,6 +35,12 @@ export const project = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'description',
+      title: 'Kratki opis projekta',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
       name: 'image',
       title: 'Glavna slika',
       type: 'image',
@@ -46,6 +52,7 @@ export const project = defineType({
           type: 'string',
           validation: (rule) => rule.required(),
         }),
+        defineField({name: 'englishAlt', title: 'English alt text', type: 'string'}),
       ],
       validation: (rule) => rule.required(),
     }),
@@ -69,6 +76,73 @@ export const project = defineType({
               name: 'caption',
               title: 'Opis fotografije',
               type: 'string',
+            }),
+            defineField({name: 'englishAlt', title: 'English alt text', type: 'string'}),
+            defineField({name: 'englishCaption', title: 'English caption', type: 'string'}),
+          ],
+        }),
+      ],
+    }),
+    defineField({
+      name: 'english',
+      title: 'English translation',
+      type: 'object',
+      fields: [
+        defineField({name: 'title', title: 'Building name', type: 'string'}),
+        defineField({name: 'location', title: 'Location', type: 'string'}),
+        defineField({name: 'completion', title: 'Completion date', type: 'string'}),
+        defineField({name: 'description', title: 'Project introduction', type: 'text', rows: 3}),
+        defineField({
+          name: 'body',
+          title: 'Page content',
+          description: 'English version of the project description and other page content.',
+          type: 'array',
+          of: [
+            defineArrayMember({
+              type: 'block',
+              styles: [
+                {title: 'Paragraph', value: 'normal'},
+                {title: 'Section heading', value: 'h2'},
+                {title: 'Subheading', value: 'h3'},
+                {title: 'Quote', value: 'blockquote'},
+              ],
+              lists: [
+                {title: 'Bulleted list', value: 'bullet'},
+                {title: 'Numbered list', value: 'number'},
+              ],
+              marks: {
+                decorators: [
+                  {title: 'Bold', value: 'strong'},
+                  {title: 'Italic', value: 'em'},
+                ],
+                annotations: [
+                  {
+                    name: 'link',
+                    type: 'object',
+                    title: 'Link',
+                    fields: [
+                      defineField({
+                        name: 'href',
+                        title: 'URL',
+                        type: 'url',
+                        validation: (rule) =>
+                          rule.required().uri({
+                            allowRelative: true,
+                            scheme: ['http', 'https', 'mailto', 'tel'],
+                          }),
+                      }),
+                    ],
+                  },
+                ],
+              },
+            }),
+            defineArrayMember({
+              type: 'image',
+              options: {hotspot: true},
+              fields: [
+                defineField({name: 'alt', title: 'Alternative text', type: 'string'}),
+                defineField({name: 'caption', title: 'Image caption', type: 'string'}),
+              ],
             }),
           ],
         }),

@@ -47,6 +47,8 @@ export const about = defineType({
           description: 'Kratki natpis u kutu slike, npr. „Gradilište Grude, 2026.”',
           type: 'string',
         }),
+        defineField({name: 'englishAlt', title: 'English alt text', type: 'string'}),
+        defineField({name: 'englishCaption', title: 'English caption', type: 'string'}),
       ],
     }),
     defineField({
@@ -55,6 +57,21 @@ export const about = defineType({
       type: 'callToAction',
       initialValue: {label: 'Više o nama', href: '/o-nama'},
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'english',
+      title: 'English translation',
+      type: 'object',
+      fields: [
+        defineField({name: 'eyebrow', title: 'Eyebrow', type: 'string'}),
+        defineField({name: 'title', title: 'Title', type: 'string'}),
+        defineField({name: 'description', title: 'Company introduction', type: 'text', rows: 4}),
+        defineField({
+          name: 'cta',
+          title: 'About page link',
+          type: 'callToAction',
+        }),
+      ],
     }),
   ],
   preview: {

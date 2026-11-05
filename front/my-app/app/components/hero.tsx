@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useLanguage } from "./language-provider";
 
 export type CallToAction = {
   label: string;
@@ -22,6 +25,7 @@ export type HeroContent = {
   };
   footerNote?: string;
   scrollLink?: CallToAction;
+  english?: Partial<Omit<HeroContent, "backgroundImage" | "english">>;
 };
 
 export default function Hero({
@@ -34,7 +38,18 @@ export default function Hero({
   stat,
   footerNote,
   scrollLink,
+  english,
 }: HeroContent) {
+  const { language } = useLanguage();
+  const translated = language === "en" ? english : undefined;
+  eyebrow = translated?.eyebrow || eyebrow;
+  title = translated?.title || title;
+  highlightedTitle = translated?.highlightedTitle || highlightedTitle;
+  description = translated?.description || description;
+  primaryCta = translated?.primaryCta || primaryCta;
+  stat = translated?.stat || stat;
+  footerNote = translated?.footerNote || footerNote;
+  scrollLink = translated?.scrollLink || scrollLink;
   const hasFooter = stat?.value || footerNote || scrollLink;
 
   return (
@@ -64,7 +79,13 @@ export default function Hero({
             {eyebrow}
           </p>
         )}
-        <h1 id="hero-title">
+        <h1
+          id="hero-title"
+          style={{
+            fontFamily: "Georgia, Times New Roman, serif",
+            fontStyle: "italic",
+          }}
+        >
           {title}
           {highlightedTitle && (
             <>
@@ -92,7 +113,9 @@ export default function Hero({
               )}
             </div>
           )}
-          {footerNote && <span className="hero__footer-note">{footerNote}</span>}
+          {footerNote && (
+            <span className="hero__footer-note">{footerNote}</span>
+          )}
           {scrollLink && (
             <a className="hero__scroll" href={scrollLink.href}>
               {scrollLink.label} <span aria-hidden="true">↓</span>

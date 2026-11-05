@@ -1,3 +1,8 @@
+"use client";
+
+import { useLanguage } from "./language-provider";
+import { messagingNumber, phoneHref } from "./contact-utils";
+
 type ContactChannel = "email" | "phone" | "whatsapp" | "viber";
 
 export type ContactContent = {
@@ -12,16 +17,15 @@ export type ContactContent = {
   officeHours?: string;
   mapUrl?: string;
   responseNote?: string;
+  english?: {
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    address?: string;
+    officeHours?: string;
+    responseNote?: string;
+  };
 };
-
-export function phoneHref(value: string) {
-  return `tel:${value.replace(/[^\d+]/g, "")}`;
-}
-
-export function messagingNumber(value: string) {
-  const digits = value.replace(/\D/g, "");
-  return digits.startsWith("00") ? digits.slice(2) : digits;
-}
 
 function ContactIcon({ channel }: { channel: ContactChannel }) {
   return (
@@ -71,7 +75,12 @@ export default function ContactSection({
   officeHours,
   mapUrl,
   responseNote,
+  english,
 }: ContactContent) {
+  const { language } = useLanguage();
+  const isEnglish = language === "en";
+  const addressText = isEnglish ? english?.address || address : address;
+  const officeHoursText = isEnglish ? english?.officeHours || officeHours : officeHours;
   const channels = [
     email
       ? {
@@ -84,7 +93,7 @@ export default function ContactSection({
     phone
       ? {
           channel: "phone" as const,
-          label: "Telefon",
+          label: isEnglish ? "Phone" : "Telefon",
           value: phone,
           href: phoneHref(phone),
         }
@@ -116,12 +125,17 @@ export default function ContactSection({
     >
       <div className="contact-section__frame">
         <div className="contact-section__intro">
-          <p className="eyebrow eyebrow--dark">{eyebrow}</p>
-          <h2 id="contact-title">{title}</h2>
-          <p className="contact-section__description">{description}</p>
-          {responseNote ? (
+          <p className="eyebrow eyebrow--dark">
+            {isEnglish ? english?.eyebrow || eyebrow : eyebrow}
+          </p>
+          <h2 id="contact-title">{isEnglish ? english?.title || title : title}</h2>
+          <p className="contact-section__description">
+            {isEnglish ? english?.description || description : description}
+          </p>
+          {(isEnglish ? english?.responseNote || responseNote : responseNote) ? (
             <p className="contact-section__note">
-              <span aria-hidden="true">✳</span> {responseNote}
+              <span aria-hidden="true">✳</span>{" "}
+              {isEnglish ? english?.responseNote || responseNote : responseNote}
             </p>
           ) : null}
           <div className="contact-section__index" aria-hidden="true">
@@ -131,7 +145,9 @@ export default function ContactSection({
         </div>
 
         <div className="contact-section__content">
-          <p className="contact-section__label">Odaberite način javljanja</p>
+          <p className="contact-section__label">
+            {isEnglish ? "Choose how to contact us" : "Odaberite način javljanja"}
+          </p>
           {channels.length ? (
             <div className="contact-section__channels">
               {channels.map(({ channel, label, value, href, ...options }) => (
@@ -157,22 +173,24 @@ export default function ContactSection({
             </div>
           ) : (
             <p className="contact-section__empty">
-              Trenutačno ažuriramo kontaktne podatke. Hvala na razumijevanju.
+              {isEnglish
+                ? "We are currently updating our contact information. Thank you for your understanding."
+                : "Trenutačno ažuriramo kontaktne podatke. Hvala na razumijevanju."}
             </p>
           )}
 
-          {(address || officeHours) ? (
+          {(addressText || officeHoursText) ? (
             <div className="contact-section__details">
-              {address ? (
+              {addressText ? (
                 <div className="contact-section__detail">
-                  <span>Posjetite nas</span>
-                  <strong>{address}</strong>
+                  <span>{isEnglish ? "Visit us" : "Posjetite nas"}</span>
+                  <strong>{addressText}</strong>
                 </div>
               ) : null}
-              {officeHours ? (
+              {officeHoursText ? (
                 <div className="contact-section__detail">
-                  <span>Radno vrijeme</span>
-                  <strong>{officeHours}</strong>
+                  <span>{isEnglish ? "Office hours" : "Radno vrijeme"}</span>
+                  <strong>{officeHoursText}</strong>
                 </div>
               ) : null}
             </div>
@@ -183,14 +201,27 @@ export default function ContactSection({
         <div className="contact-section__map">
           <div className="contact-section__map-heading">
             <div className="contact-section__map-copy">
-              <span className="eyebrow eyebrow--dark">Naša lokacija</span>
-              <strong>{address ?? "Sjedište Petrušić gradnje"}</strong>
+              <span className="eyebrow eyebrow--dark">
+                {isEnglish ? "Our location" : "Naša lokacija"}
+              </span>
+              <strong>
+                {addressText ??
+                  (isEnglish
+                    ? "Petrušić gradnja headquarters"
+                    : "Sjedište Petrušić gradnje")}
+              </strong>
             </div>
           </div>
           <div className="contact-section__map-frame">
             <iframe
               src={mapUrl}
-              title={address ? `Karta lokacije: ${address}` : "Lokacija Petrušić gradnje"}
+              title={
+                addressText
+                  ? `${isEnglish ? "Location map" : "Karta lokacije"}: ${addressText}`
+                  : isEnglish
+                    ? "Petrušić gradnja location"
+                    : "Lokacija Petrušić gradnje"
+              }
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               allowFullScreen

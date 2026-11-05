@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { PortableText } from "@portabletext/react";
 import ProjectGallery from "../../components/project-gallery";
-import { portableComponents } from "../../components/project-body";
+import {
+  ProjectBodyContent,
+  ProjectHeroImage,
+  ProjectText,
+} from "../../components/project-localization";
 import SaleProjectCard from "../../components/sale-project-card";
-import { messagingNumber, phoneHref } from "../../components/contact-section";
+import { messagingNumber, phoneHref } from "../../components/contact-utils";
 import { getHomePage } from "../../../sanity/lib/home";
 import {
   getProjectBySlug,
@@ -84,45 +86,66 @@ async function ProjectDetailContent({ params }: PageProps) {
   const otherProjects = allProjects
     .filter((item) => item.slug !== project.slug)
     .slice(0, 2);
-  const { hotspot } = project.image;
   const contact = home?.contact;
 
   return (
     <main className="project-detail">
       <section className="project-detail__hero" aria-labelledby="project-title">
         <div className="project-detail__hero-media">
-          <Image
+          <ProjectHeroImage
             src={project.image.src}
-            alt={project.image.alt || project.title}
-            fill
-            loading="eager"
-            fetchPriority="high"
-            sizes="100vw"
-            style={
-              hotspot
-                ? { objectPosition: `${hotspot.x * 100}% ${hotspot.y * 100}%` }
-                : undefined
-            }
+            croatianAlt={project.image.alt}
+            englishAlt={project.image.englishAlt}
+            fallbackAlt={project.title}
+            hotspot={project.image.hotspot}
           />
         </div>
         <div className="project-detail__wrap project-detail__hero-inner">
           <Link className="project-detail__back" href="/prodaja-stanova">
-            <span aria-hidden="true">←</span> Svi projekti
+            <span aria-hidden="true">←</span>{" "}
+            <ProjectText croatian="Svi projekti" english="All projects" />
           </Link>
           <div className="project-detail__hero-copy">
-            <p className="eyebrow">Petrušić gradnja · Stanovi u prodaji</p>
-            <h1 id="project-title">{project.title}</h1>
-            <p className="project-detail__lead">
-              Promišljena arhitektura, kvalitetna izvedba i prostor oblikovan za
-              svakodnevni život.
+            <p className="eyebrow">
+              <ProjectText
+                croatian="Petrušić gradnja · Stanovi u prodaji"
+                english="Petrušić gradnja · Apartments for sale"
+              />
             </p>
+            <ProjectText
+              element="h1"
+              id="project-title"
+              croatian={project.title}
+              english={project.english?.title || project.title}
+            />
+            <ProjectText
+              element="p"
+              className="project-detail__lead"
+              croatian={
+                project.description ||
+                "Promišljena arhitektura, kvalitetna izvedba i prostor oblikovan za svakodnevni život."
+              }
+              english={
+                project.english?.description ||
+                project.description ||
+                "Promišljena arhitektura, kvalitetna izvedba i prostor oblikovan za svakodnevni život."
+              }
+            />
             <div className="project-detail__actions">
               <Link className="button button--primary" href="/#kontakt">
-                Zatražite informacije <span aria-hidden="true">↗</span>
+                <ProjectText
+                  croatian="Zatražite informacije"
+                  english="Request information"
+                />{" "}
+                <span aria-hidden="true">↗</span>
               </Link>
               {gallery.length > 1 ? (
                 <a className="project-detail__ghost" href="#galerija">
-                  Pogledaj galeriju <span aria-hidden="true">↓</span>
+                  <ProjectText
+                    croatian="Pogledaj galeriju"
+                    english="View gallery"
+                  />{" "}
+                  <span aria-hidden="true">↓</span>
                 </a>
               ) : null}
             </div>
@@ -131,25 +154,30 @@ async function ProjectDetailContent({ params }: PageProps) {
       </section>
 
       <div className="about-page">
-        <section className="about-stats" aria-label="Brojke">
+        <section className="about-stats">
           <ul>
             <li>
               <strong style={{ fontSize: "24px", paddingBottom: "8px" }}>
-                Lokacija
+                <ProjectText croatian="Lokacija" english="Location" />
               </strong>
               <span style={{ fontSize: "16px" }}>{project.location}</span>
             </li>
             <li>
               <strong style={{ fontSize: "24px", paddingBottom: "8px" }}>
-                Fotografije
+                <ProjectText croatian="Fotografije" english="Photos" />
               </strong>
               <span style={{ fontSize: "16px" }}>{gallery.length}</span>
             </li>
             <li>
               <strong style={{ fontSize: "24px", paddingBottom: "8px" }}>
-                Status
+                <ProjectText croatian="Status" english="Status" />
               </strong>
-              <span style={{ fontSize: "16px" }}>Aktualno u ponudi</span>
+              <span style={{ fontSize: "16px" }}>
+                <ProjectText
+                  croatian="Aktualno u ponudi"
+                  english="Currently available"
+                />
+              </span>
             </li>
           </ul>
         </section>
@@ -188,16 +216,16 @@ async function ProjectDetailContent({ params }: PageProps) {
         <section
           className="project-detail__story project-detail__wrap"
           id="opis-projekta"
-          aria-label="O projektu"
+          aria-label="About the project"
         >
           {/* <div className="project-detail__story-label">
             <p className="eyebrow eyebrow--dark">Pažnja u svakom detalju</p>
             <h2>Prostor za vaš novi početak</h2>
           </div> */}
           <div className="project-body">
-            <PortableText
-              value={project.body}
-              components={portableComponents}
+            <ProjectBodyContent
+              croatian={project.body}
+              english={project.english?.body}
             />
           </div>
         </section>
@@ -209,16 +237,28 @@ async function ProjectDetailContent({ params }: PageProps) {
           aria-labelledby="project-contact-title"
         >
           <div className="project-detail__contact-copy">
-            <p className="eyebrow">Sljedeći korak</p>
-            <h2 id="project-contact-title">Pronašli ste svoj novi dom?</h2>
-            <p>
-              Naš tim rado će vam odgovoriti na pitanja i dogovoriti
-              razgledavanje.
+            <p className="eyebrow">
+              <ProjectText croatian="Sljedeći korak" english="Next step" />
             </p>
+            <ProjectText
+              element="h2"
+              id="project-contact-title"
+              croatian="Pronašli ste svoj novi dom?"
+              english="Have you found your new home?"
+            />
+            <ProjectText
+              element="p"
+              croatian="Naš tim rado će vam odgovoriti na pitanja i dogovoriti razgledavanje."
+              english="Our team will be happy to answer your questions and arrange a viewing."
+            />
           </div>
           <div className="project-detail__contact-actions">
             <Link className="button button--primary" href="/#kontakt">
-              Zatražite informacije <span aria-hidden="true">↗</span>
+              <ProjectText
+                croatian="Zatražite informacije"
+                english="Request information"
+              />{" "}
+              <span aria-hidden="true">↗</span>
             </Link>
             {contact?.phone ? (
               <a
@@ -249,11 +289,19 @@ async function ProjectDetailContent({ params }: PageProps) {
         >
           <div className="section-heading">
             <div>
-              <p className="eyebrow eyebrow--dark">Istražite još</p>
-              <h2 id="more-projects-title">Ostali projekti</h2>
+              <p className="eyebrow eyebrow--dark">
+                <ProjectText croatian="Istražite još" english="Explore more" />
+              </p>
+              <ProjectText
+                element="h2"
+                id="more-projects-title"
+                croatian="Ostali projekti"
+                english="Other projects"
+              />
             </div>
             <Link className="project-detail__all" href="/prodaja-stanova">
-              Svi projekti <span aria-hidden="true">→</span>
+              <ProjectText croatian="Svi projekti" english="All projects" />{" "}
+              <span aria-hidden="true">→</span>
             </Link>
           </div>
           <ul className="sale-project-grid">

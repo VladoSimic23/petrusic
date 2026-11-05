@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
+import { useLanguage } from "./language-provider";
 
 export type FaqContent = {
   eyebrow?: string;
@@ -9,6 +10,13 @@ export type FaqContent = {
   description?: string;
   items: { _key: string; question: string; answer: string }[];
   cta?: { text?: string; link: { label: string; href: string } };
+  english?: {
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    items: { _key: string; question?: string; answer?: string }[];
+    cta?: { text?: string; linkLabel?: string };
+  };
 };
 
 export default function FaqSection({
@@ -17,14 +25,35 @@ export default function FaqSection({
   description,
   items,
   cta,
+  english,
 }: FaqContent) {
+  const { language } = useLanguage();
+  const isEnglish = language === "en";
+  const translatedItems = items.map((item, index) => {
+    const translated = english?.items.find((entry) => entry._key === item._key);
+    return {
+      ...item,
+      question: isEnglish ? translated?.question || item.question : item.question,
+      answer: isEnglish ? translated?.answer || item.answer : item.answer,
+      _key: translated?._key || item._key || String(index),
+    };
+  });
+  const translatedEyebrow = isEnglish ? english?.eyebrow || eyebrow : eyebrow;
+  const translatedTitle = isEnglish ? english?.title || title : title;
+  const translatedDescription = isEnglish
+    ? english?.description || description
+    : description;
+  const translatedCtaText = isEnglish ? english?.cta?.text || cta?.text : cta?.text;
+  const translatedCtaLabel = isEnglish
+    ? english?.cta?.linkLabel || cta?.link.label
+    : cta?.link.label;
   const [openKey, setOpenKey] = useState<string | null>(items[0]?._key ?? null);
   const baseId = useId();
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
+    mainEntity: translatedItems.map((item) => ({
       "@type": "Question",
       name: item.question,
       acceptedAnswer: { "@type": "Answer", text: item.answer },
@@ -47,20 +76,22 @@ export default function FaqSection({
       <div className="faq-section__layout">
         <div className="faq-section__intro">
           <div className="faq-section__heading">
-            {eyebrow ? <p className="eyebrow eyebrow--dark">{eyebrow}</p> : null}
-            <h2 id="faq-title">{title}</h2>
+            {translatedEyebrow ? (
+              <p className="eyebrow eyebrow--dark">{translatedEyebrow}</p>
+            ) : null}
+            <h2 id="faq-title">{translatedTitle}</h2>
           </div>
-          {description || cta ? (
+          {translatedDescription || cta ? (
             <div className="faq-section__summary">
-              {description ? (
-                <p className="faq-section__description">{description}</p>
+              {translatedDescription ? (
+                <p className="faq-section__description">{translatedDescription}</p>
               ) : null}
 
               {cta ? (
                 <div className="faq-section__cta">
-                  {cta.text ? <p>{cta.text}</p> : null}
+                  {translatedCtaText ? <p>{translatedCtaText}</p> : null}
                   <Link className="faq-section__cta-link" href={cta.link.href}>
-                    {cta.link.label} <span aria-hidden="true">→</span>
+                    {translatedCtaLabel} <span aria-hidden="true">→</span>
                   </Link>
                 </div>
               ) : null}
@@ -69,7 +100,7 @@ export default function FaqSection({
         </div>
 
         <ul className="faq-list">
-          {items.map((item, index) => {
+          {translatedItems.map((item, index) => {
             const isOpen = item._key === openKey;
             const panelId = `${baseId}-panel-${index}`;
             const buttonId = `${baseId}-button-${index}`;

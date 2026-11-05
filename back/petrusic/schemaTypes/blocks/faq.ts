@@ -13,6 +13,7 @@ export const faq = defineType({
       type: 'string',
       initialValue: 'Imate pitanja?',
     }),
+    defineField({name: 'eyebrowEn', title: 'Nadnaslov (English)', type: 'string'}),
     defineField({
       name: 'title',
       title: 'Naslov',
@@ -20,6 +21,7 @@ export const faq = defineType({
       initialValue: 'Česta pitanja',
       validation: (rule) => rule.required(),
     }),
+    defineField({name: 'titleEn', title: 'Naslov (English)', type: 'string'}),
     defineField({
       name: 'description',
       title: 'Kratki uvod',
@@ -27,6 +29,7 @@ export const faq = defineType({
       type: 'text',
       rows: 3,
     }),
+    defineField({name: 'descriptionEn', title: 'Kratki uvod (English)', type: 'text', rows: 3}),
     defineField({
       name: 'items',
       title: 'Pitanja',
@@ -43,12 +46,19 @@ export const faq = defineType({
               type: 'string',
               validation: (rule) => rule.required(),
             }),
+            defineField({name: 'questionEn', title: 'Pitanje (English)', type: 'string'}),
             defineField({
               name: 'answer',
               title: 'Odgovor',
               type: 'text',
               rows: 4,
               validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: 'answerEn',
+              title: 'Odgovor (English)',
+              type: 'text',
+              rows: 4,
             }),
           ],
           preview: {
@@ -70,7 +80,9 @@ export const faq = defineType({
           type: 'string',
           initialValue: 'Niste pronašli odgovor?',
         }),
+        defineField({name: 'textEn', title: 'Tekst (English)', type: 'string'}),
         defineField({name: 'link', title: 'Poveznica', type: 'callToAction'}),
+        defineField({name: 'linkLabelEn', title: 'Tekst poveznice (English)', type: 'string'}),
       ],
     }),
   ],

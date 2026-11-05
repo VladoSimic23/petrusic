@@ -6,7 +6,9 @@ import { client } from "./client";
 export type BuildingImage = {
   src: string;
   alt?: string;
+  altEn?: string;
   caption?: string;
+  captionEn?: string;
   hotspot?: { x: number; y: number };
 };
 
@@ -20,6 +22,11 @@ export type BuildingSummary = {
   description?: string;
   allSold: boolean;
   image: BuildingImage;
+  english?: {
+    title?: string;
+    location?: string;
+    description?: string;
+  };
 };
 
 export type BuildingBodyImage = BuildingImage & {
@@ -30,29 +37,37 @@ export type BuildingBodyImage = BuildingImage & {
 export type BuildingDetail = BuildingSummary & {
   startYear?: number;
   floors?: string;
+  floorsEn?: string;
   totalArea?: number;
   parkingSpaces?: number;
   highlights: string[];
+  highlightsEn: string[];
   gallery: (BuildingImage & { _key: string })[];
   body: (PortableTextBlock | BuildingBodyImage)[];
+  bodyEn: (PortableTextBlock | BuildingBodyImage)[];
   seo?: { title?: string; description?: string; image?: string };
 };
 
 type QueryImage = {
   src: string | null;
   alt?: string | null;
+  altEn?: string | null;
   caption?: string | null;
+  captionEn?: string | null;
   hotspot?: { x: number | null; y: number | null } | null;
 } | null;
 
 type SummaryQuery = {
   _id: string | null;
   title: string | null;
+  titleEn: string | null;
   slug: string | null;
   location: string | null;
+  locationEn: string | null;
   completionYear: number | null;
   apartmentCount: number | null;
   shortDescription: string | null;
+  shortDescriptionEn: string | null;
   allSold: boolean | null;
   image: QueryImage;
 };
@@ -60,11 +75,16 @@ type SummaryQuery = {
 type DetailQuery = SummaryQuery & {
   startYear: number | null;
   floors: string | null;
+  floorsEn: string | null;
   totalArea: number | null;
   parkingSpaces: number | null;
   highlights: (string | null)[] | null;
+  highlightsEn: (string | null)[] | null;
   gallery: ((QueryImage & { _key: string | null }) | null)[] | null;
   body:
+    | (PortableTextBlock | (NonNullable<QueryImage> & { _key: string | null; _type: "image" }))[]
+    | null;
+  bodyEn:
     | (PortableTextBlock | (NonNullable<QueryImage> & { _key: string | null; _type: "image" }))[]
     | null;
   seo: {
@@ -77,15 +97,19 @@ type DetailQuery = SummaryQuery & {
 const SUMMARY_PROJECTION = `{
   _id,
   title,
+  titleEn,
   "slug": slug.current,
   location,
+  locationEn,
   completionYear,
   apartmentCount,
   shortDescription,
+  shortDescriptionEn,
   allSold,
   "image": image{
     "src": asset->url,
     alt,
+    altEn,
     "hotspot": hotspot{x, y}
   }
 }`;
@@ -99,20 +123,26 @@ const BUILDING_BY_SLUG_QUERY = defineQuery(`*[
 ][0]{
   _id,
   title,
+  titleEn,
   "slug": slug.current,
   location,
+  locationEn,
   completionYear,
   apartmentCount,
   shortDescription,
+  shortDescriptionEn,
   allSold,
   startYear,
   floors,
+  floorsEn,
   totalArea,
   parkingSpaces,
   highlights,
+  highlightsEn,
   "image": image{
     "src": asset->url,
     alt,
+    altEn,
     "hotspot": hotspot{x, y}
   },
   "gallery": gallery[]{
@@ -120,6 +150,8 @@ const BUILDING_BY_SLUG_QUERY = defineQuery(`*[
     "src": asset->url,
     alt,
     caption,
+    altEn,
+    captionEn,
     "hotspot": hotspot{x, y}
   },
   body[]{
@@ -130,6 +162,21 @@ const BUILDING_BY_SLUG_QUERY = defineQuery(`*[
       "src": asset->url,
       alt,
       caption,
+      altEn,
+      captionEn,
+      "hotspot": hotspot{x, y}
+    }
+  },
+  bodyEn[]{
+    ...,
+    _type == "image" => {
+      _key,
+      _type,
+      "src": asset->url,
+      alt,
+      caption,
+      altEn,
+      captionEn,
       "hotspot": hotspot{x, y}
     }
   },
@@ -146,7 +193,9 @@ function mapImage(value: QueryImage | undefined): BuildingImage | null {
   return {
     src: value.src,
     alt: value.alt ?? undefined,
+    altEn: value.altEn ?? undefined,
     caption: value.caption ?? undefined,
+    captionEn: value.captionEn ?? undefined,
     hotspot:
       hotspot?.x != null && hotspot.y != null
         ? { x: hotspot.x, y: hotspot.y }
@@ -163,6 +212,11 @@ function mapSummary(item: SummaryQuery | null): BuildingSummary | null {
   return {
     _id: item._id,
     title: item.title,
+    english: {
+      title: item.titleEn ?? undefined,
+      location: item.locationEn ?? undefined,
+      description: item.shortDescriptionEn ?? undefined,
+    },
     slug: item.slug,
     location: item.location,
     completionYear: item.completionYear ?? undefined,
@@ -204,6 +258,7 @@ export async function getCompletedBuildingBySlug(
   });
 
   const body: BuildingDetail["body"] = [];
+  const bodyEn: BuildingDetail["bodyEn"] = [];
   for (const block of data.body ?? []) {
     if ("src" in block && block._type === "image") {
       const mapped = mapImage(block);
@@ -214,16 +269,29 @@ export async function getCompletedBuildingBySlug(
       body.push(block as PortableTextBlock);
     }
   }
+  for (const block of data.bodyEn ?? []) {
+    if ("src" in block && block._type === "image") {
+      const mapped = mapImage(block);
+      if (block._key && mapped) {
+        bodyEn.push({ _key: block._key, _type: "image", ...mapped });
+      }
+    } else {
+      bodyEn.push(block as PortableTextBlock);
+    }
+  }
 
   return {
     ...summary,
     startYear: data.startYear ?? undefined,
     floors: data.floors ?? undefined,
+    floorsEn: data.floorsEn ?? undefined,
     totalArea: data.totalArea ?? undefined,
     parkingSpaces: data.parkingSpaces ?? undefined,
     highlights: (data.highlights ?? []).filter((h): h is string => Boolean(h)),
+    highlightsEn: (data.highlightsEn ?? []).filter((h): h is string => Boolean(h)),
     gallery,
     body,
+    bodyEn,
     seo: data.seo
       ? {
           title: data.seo.title ?? undefined,

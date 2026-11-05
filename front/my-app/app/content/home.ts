@@ -37,17 +37,37 @@ export const contactContent: ContactContent = {
   description:
     "Naš tim pomoći će vam pronaći odgovore i informacije o projektima koji vas zanimaju.",
   responseNote: "Veselimo se vašem javljanju.",
+  english: {
+    eyebrow: "We are here for you",
+    title: "Let's talk about your new home",
+    description:
+      "Our team will help you find answers and information about the projects you are interested in.",
+    responseNote: "We look forward to hearing from you.",
+  },
 };
 
 export const statsContent: StatsContent = {
   items: [
-    { _key: "years", value: 30, suffix: "+", label: "godina iskustva" },
-    { _key: "buildings", value: 50, suffix: "+", label: "izgrađenih zgrada" },
+    {
+      _key: "years",
+      value: 30,
+      suffix: "+",
+      label: "godina iskustva",
+      labelEn: "years of experience",
+    },
+    {
+      _key: "buildings",
+      value: 50,
+      suffix: "+",
+      label: "izgrađenih zgrada",
+      labelEn: "buildings completed",
+    },
     {
       _key: "apartments",
       value: 1000,
       suffix: "+",
       label: "isporučenih stanova",
+      labelEn: "apartments delivered",
     },
   ],
 };

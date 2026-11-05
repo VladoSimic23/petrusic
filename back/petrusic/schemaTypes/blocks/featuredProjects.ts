@@ -48,6 +48,21 @@ export const featuredProjects = defineType({
       type: 'callToAction',
       initialValue: {label: 'Svi dostupni projekti', href: '/prodaja-stanova'},
     }),
+    defineField({
+      name: 'english',
+      title: 'English translation',
+      type: 'object',
+      fields: [
+        defineField({name: 'eyebrow', title: 'Eyebrow', type: 'string'}),
+        defineField({name: 'title', title: 'Title', type: 'string'}),
+        defineField({name: 'cardCtaLabel', title: 'Project button label', type: 'string'}),
+        defineField({
+          name: 'viewAllLink',
+          title: 'Link to all projects',
+          type: 'callToAction',
+        }),
+      ],
+    }),
   ],
   preview: {
     select: {title: 'title', projects: 'projects'},

@@ -9,7 +9,9 @@ import {
 export type ProjectImage = {
   src: string;
   alt?: string;
+  englishAlt?: string;
   caption?: string;
+  englishCaption?: string;
   hotspot?: { x: number; y: number };
 };
 
@@ -19,7 +21,13 @@ export type ProjectSummary = {
   slug: string;
   location: string;
   completion?: string;
+  description?: string;
   image: ProjectImage;
+  english?: {
+    title?: string;
+    location?: string;
+    completion?: string;
+  };
 };
 
 export type ProjectBodyImage = {
@@ -35,12 +43,18 @@ export type ProjectDetail = ProjectSummary & {
   gallery: (ProjectImage & { _key: string })[];
   body: (PortableTextBlock | ProjectBodyImage)[];
   seo?: { title?: string; description?: string; image?: string };
+  english?: ProjectSummary["english"] & {
+    description?: string;
+    body: (PortableTextBlock | ProjectBodyImage)[];
+  };
 };
 
 type QueryImage = {
   src: string | null;
   alt?: string | null;
+  englishAlt?: string | null;
   caption?: string | null;
+  englishCaption?: string | null;
   hotspot?: { x: number | null; y: number | null } | null;
 };
 
@@ -50,10 +64,25 @@ type ProjectListQueryItem = {
   slug: string | null;
   location: string | null;
   completion: string | null;
+  description: string | null;
+  english: {
+    title: string | null;
+    location: string | null;
+    completion: string | null;
+  } | null;
   image: QueryImage | null;
 };
 
 type ProjectDetailQuery = ProjectListQueryItem & {
+  english: (NonNullable<ProjectListQueryItem["english"]> & {
+    description: string | null;
+    body:
+      | (
+          | PortableTextBlock
+          | (QueryImage & { _key: string | null; _type: "image" })
+        )[]
+      | null;
+  }) | null;
   gallery:
     | (QueryImage & { _key: string | null })[]
     | null;
@@ -88,14 +117,23 @@ export async function getProjectsForSale(): Promise<ProjectSummary[]> {
         slug: project.slug,
         location: project.location,
         completion: project.completion ?? undefined,
+        description: project.description ?? undefined,
         image: {
           src: project.image.src,
           alt: project.image.alt ?? undefined,
+          englishAlt: project.image.englishAlt ?? undefined,
           hotspot:
             project.image.hotspot?.x != null && project.image.hotspot.y != null
               ? { x: project.image.hotspot.x, y: project.image.hotspot.y }
               : undefined,
         },
+        english: project.english
+          ? {
+              title: project.english.title ?? undefined,
+              location: project.english.location ?? undefined,
+              completion: project.english.completion ?? undefined,
+            }
+          : undefined,
       },
     ];
   });
@@ -125,14 +163,18 @@ export async function getProjectBySlug(
   const image = (value: {
     src: string | null;
     alt?: string | null;
+    englishAlt?: string | null;
     caption?: string | null;
+    englishCaption?: string | null;
     hotspot?: { x: number | null; y: number | null } | null;
   } | null) =>
     value?.src
       ? {
           src: value.src,
           alt: value.alt ?? undefined,
+          englishAlt: value.englishAlt ?? undefined,
           caption: value.caption ?? undefined,
+          englishCaption: value.englishCaption ?? undefined,
           hotspot:
             value.hotspot?.x != null && value.hotspot.y != null
               ? { x: value.hotspot.x, y: value.hotspot.y }
@@ -145,6 +187,7 @@ export async function getProjectBySlug(
     return item?._key && mapped ? [{ _key: item._key, ...mapped }] : [];
   });
   const body: ProjectDetail["body"] = [];
+  const englishBody: NonNullable<ProjectDetail["english"]>["body"] = [];
   for (const block of project.body ?? []) {
     if ("src" in block && block._type === "image") {
       const mapped = image(block);
@@ -162,15 +205,42 @@ export async function getProjectBySlug(
       body.push(block);
     }
   }
+  for (const block of project.english?.body ?? []) {
+    if ("src" in block && block._type === "image") {
+      const mapped = image(block);
+      if (block._key && mapped) {
+        englishBody.push({
+          _key: block._key,
+          _type: "image",
+          src: mapped.src,
+          alt: mapped.alt,
+          caption: mapped.caption,
+          hotspot: mapped.hotspot,
+        });
+      }
+    } else {
+      englishBody.push(block);
+    }
+  }
   return {
     _id: project._id,
     title: project.title,
     slug: project.slug,
     location: project.location,
     completion: project.completion ?? undefined,
+    description: project.description ?? undefined,
     image: image(project.image)!,
     gallery,
     body,
+    english: project.english
+      ? {
+          title: project.english.title ?? undefined,
+          location: project.english.location ?? undefined,
+          completion: project.english.completion ?? undefined,
+          description: project.english.description ?? undefined,
+          body: englishBody,
+        }
+      : undefined,
     seo: project.seo
       ? {
           title: project.seo.title ?? undefined,

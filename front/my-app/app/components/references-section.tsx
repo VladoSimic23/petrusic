@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useLanguage } from "./language-provider";
 
 export type ReferenceCard = {
   _id: string;
@@ -12,9 +13,15 @@ export type ReferenceCard = {
   completionYear?: number;
   apartmentCount?: number;
   description?: string;
+  english?: {
+    title?: string;
+    location?: string;
+    description?: string;
+  };
   image: {
     src: string;
     alt?: string;
+    altEn?: string;
     hotspot?: { x: number; y: number };
   };
 };
@@ -32,6 +39,8 @@ export default function ReferencesSection({
   viewAllLink,
   projects,
 }: ReferencesContent) {
+  const { language } = useLanguage();
+  const isEnglish = language === "en";
   const [activeId, setActiveId] = useState<string | null>(null);
   const stageRef = useRef<HTMLUListElement>(null);
   const count = projects.length;
@@ -62,8 +71,14 @@ export default function ReferencesSection({
     >
       <div className="section-heading">
         <div>
-          {eyebrow ? <p className="eyebrow eyebrow--dark">{eyebrow}</p> : null}
-          <h2 id="references-title">{title}</h2>
+          {eyebrow ? (
+            <p className="eyebrow eyebrow--dark">
+              {isEnglish ? "Our references" : eyebrow}
+            </p>
+          ) : null}
+          <h2 id="references-title">
+            {isEnglish ? "Completed buildings" : title}
+          </h2>
         </div>
       </div>
 
@@ -106,13 +121,17 @@ export default function ReferencesSection({
                 type="button"
                 className="reference-step__toggle"
                 aria-pressed={isActive}
-                aria-label={`${project.title}${project.location ? `, ${project.location}` : ""}`}
+                aria-label={`${isEnglish ? project.english?.title || project.title : project.title}${project.location ? `, ${isEnglish ? project.english?.location || project.location : project.location}` : ""}`}
                 onClick={() => setActiveId(isActive ? null : project._id)}
               >
                 <Image
                   className="reference-step__image"
                   src={project.image.src}
-                  alt={project.image.alt ?? ""}
+                  alt={
+                    isEnglish
+                      ? project.image.altEn || project.image.alt || ""
+                      : project.image.alt ?? ""
+                  }
                   fill
                   sizes="(max-width: 900px) 100vw, 56vw"
                   style={
@@ -132,22 +151,28 @@ export default function ReferencesSection({
                 ) : null}
                 {project.location ? (
                   <span className="reference-step__location">
-                    {project.location}
+                    {isEnglish ? project.english?.location || project.location : project.location}
                   </span>
                 ) : null}
-                <h3 className="reference-step__title">{project.title}</h3>
+                <h3 className="reference-step__title">
+                  {isEnglish ? project.english?.title || project.title : project.title}
+                </h3>
 
                 <div className="reference-step__details">
                   {project.description ? (
                     <p className="reference-step__description">
-                      {project.description}
+                      {isEnglish ? project.english?.description || project.description : project.description}
                     </p>
                   ) : null}
                   <div className="reference-step__meta">
                     {project.apartmentCount ? (
                       <span>
                         {project.apartmentCount}{" "}
-                        {apartmentWord(project.apartmentCount)}
+                        {isEnglish
+                          ? project.apartmentCount === 1
+                            ? "apartment"
+                            : "apartments"
+                          : apartmentWord(project.apartmentCount)}
                       </span>
                     ) : (
                       <span />
@@ -157,7 +182,8 @@ export default function ReferencesSection({
                       href={`/izgradeni-objekti/${project.slug}`}
                       tabIndex={0}
                     >
-                      Pogledaj zgradu <span aria-hidden="true">→</span>
+                      {isEnglish ? "View building" : "Pogledaj zgradu"}{" "}
+                      <span aria-hidden="true">→</span>
                     </Link>
                   </div>
                 </div>
@@ -169,7 +195,8 @@ export default function ReferencesSection({
 
       <div className="references-section__footer">
         <Link className="references-section__cta" href={viewAllLink.href}>
-          {viewAllLink.label} <span aria-hidden="true">→</span>
+          {isEnglish ? "View all completed buildings" : viewAllLink.label}{" "}
+          <span aria-hidden="true">→</span>
         </Link>
       </div>
     </section>

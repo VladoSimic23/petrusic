@@ -14,6 +14,7 @@ const ABOUT_PAGE_QUERY = defineQuery(`*[_id == "aboutPage"][0]{
   "heroImage": heroImage{
     "src": asset->url,
     alt,
+    englishAlt,
     "hotspot": hotspot{x, y}
   },
   storyTitle,
@@ -21,28 +22,50 @@ const ABOUT_PAGE_QUERY = defineQuery(`*[_id == "aboutPage"][0]{
   "storyImage": storyImage{
     "src": asset->url,
     alt,
+    englishAlt,
     "hotspot": hotspot{x, y}
   },
-  "stats": stats[]{_key, value, suffix, label},
+  "stats": stats[]{_key, value, suffix, label, labelEn},
   mission,
   vision,
   reasonsTitle,
-  "reasons": reasons[]{title, description},
+  "reasons": reasons[]{title, description, titleEn, descriptionEn},
   servicesTitle,
   servicesIntro,
-  "services": services[]{title, description},
+  "services": services[]{title, description, titleEn, descriptionEn},
   companyName,
+  companyNameEn,
   headquarters,
+  headquartersEn,
   jib,
   vat,
   founded,
+  foundedEn,
   management,
+  managementEn,
+  "english": {
+    "eyebrow": eyebrowEn,
+    "heading": headingEn,
+    "highlightedHeading": highlightedHeadingEn,
+    "lead": leadEn,
+    "storyTitle": storyTitleEn,
+    "storyParagraphs": storyParagraphsEn,
+    "stats": stats[]{_key, "label": labelEn},
+    "mission": missionEn,
+    "vision": visionEn,
+    "reasonsTitle": reasonsTitleEn,
+    "reasons": reasons[]{"title": titleEn, "description": descriptionEn},
+    "servicesTitle": servicesTitleEn,
+    "servicesIntro": servicesIntroEn,
+    "services": services[]{"title": titleEn, "description": descriptionEn}
+  },
   "seo": seo{title, description, "image": image.asset->url}
 }`);
 
 type QueryImage = {
   src: string | null;
   alt: string | null;
+  englishAlt: string | null;
   hotspot: { x: number | null; y: number | null } | null;
 } | null;
 
@@ -52,6 +75,7 @@ function mapImage(image: QueryImage) {
   return {
     src: image.src,
     alt: image.alt ?? undefined,
+    englishAlt: image.englishAlt ?? undefined,
     hotspot:
       hotspot?.x != null && hotspot.y != null
         ? { x: hotspot.x, y: hotspot.y }
@@ -101,6 +125,11 @@ export async function getAboutPage(): Promise<AboutPageContent> {
         ]
       : [],
   );
+  const englishStats = (data.english?.stats ?? []).map(
+    (stat: {label: string | null} | null) => ({label: stat?.label ?? undefined}),
+  );
+  const englishParagraphs = ((data.english?.storyParagraphs ?? []) as (string | null)[])
+    .filter((paragraph): paragraph is string => Boolean(paragraph));
 
   return {
     eyebrow: data.eyebrow || d.eyebrow,
@@ -126,11 +155,35 @@ export async function getAboutPage(): Promise<AboutPageContent> {
       vat: data.vat || d.company.vat,
       founded: data.founded || d.company.founded,
       management: data.management || d.company.management,
+      english: {
+        name: data.companyNameEn ?? undefined,
+        headquarters: data.headquartersEn ?? undefined,
+        founded: data.foundedEn ?? undefined,
+        management: data.managementEn ?? undefined,
+      },
     },
     seo: {
       title: data.seo?.title ?? undefined,
       description: data.seo?.description ?? undefined,
       image: data.seo?.image ?? undefined,
     },
+    english: data.english
+      ? {
+          eyebrow: data.english.eyebrow ?? undefined,
+          heading: data.english.heading ?? undefined,
+          highlightedHeading: data.english.highlightedHeading ?? undefined,
+          lead: data.english.lead ?? undefined,
+          storyTitle: data.english.storyTitle ?? undefined,
+          storyParagraphs: englishParagraphs.length ? englishParagraphs : undefined,
+          stats: englishStats,
+          mission: data.english.mission ?? undefined,
+          vision: data.english.vision ?? undefined,
+          reasonsTitle: data.english.reasonsTitle ?? undefined,
+          reasons: textItems(data.english.reasons),
+          servicesTitle: data.english.servicesTitle ?? undefined,
+          servicesIntro: data.english.servicesIntro ?? undefined,
+          services: textItems(data.english.services),
+        }
+      : undefined,
   };
 }

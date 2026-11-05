@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import CountUp from "./count-up";
 import AboutParallaxBackground from "./about-parallax-background";
 import type { StatsContent } from "./stats-section";
+import { useLanguage } from "./language-provider";
 
 export type AboutContent = {
   eyebrow?: string;
@@ -10,10 +13,18 @@ export type AboutContent = {
   image?: {
     src: string;
     alt?: string;
+    englishAlt?: string;
     caption?: string;
+    englishCaption?: string;
     hotspot?: { x: number; y: number };
   };
   cta: { label: string; href: string };
+  english?: {
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    cta?: { label?: string; href?: string };
+  };
 };
 
 export default function AboutSection({
@@ -22,9 +33,19 @@ export default function AboutSection({
   description,
   image,
   cta,
+  english,
   stats,
 }: AboutContent & { stats?: StatsContent }) {
   const items = stats?.items ?? [];
+  const { language } = useLanguage();
+  const translated = language === "en" ? english : undefined;
+  const translatedImage = image
+    ? {
+        ...image,
+        alt: language === "en" ? image.englishAlt || image.alt : image.alt,
+        caption: language === "en" ? image.englishCaption || image.caption : image.caption,
+      }
+    : undefined;
 
   return (
     <section
@@ -32,18 +53,23 @@ export default function AboutSection({
       id="o-nama"
       aria-labelledby="about-title"
     >
-      {image ? (
-        <AboutParallaxBackground {...image} />
+      {translatedImage ? (
+        <AboutParallaxBackground {...translatedImage} />
       ) : null}
       <div className="about-section__inner">
         <div className="about-section__heading">
-          {eyebrow ? <p className="eyebrow eyebrow--dark">{eyebrow}</p> : null}
-          <h2 id="about-title">{title}</h2>
+          {translated?.eyebrow || eyebrow ? (
+            <p className="eyebrow eyebrow--dark">{translated?.eyebrow || eyebrow}</p>
+          ) : null}
+          <h2 id="about-title">{translated?.title || title}</h2>
         </div>
         <div className="about-section__content">
-          <p>{description}</p>
-          <Link className="about-section__link" href={cta.href}>
-            {cta.label} <span aria-hidden="true">→</span>
+          <p>{translated?.description || description}</p>
+          <Link
+            className="about-section__link"
+            href={translated?.cta?.href || cta.href}
+          >
+            {translated?.cta?.label || cta.label} <span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>
@@ -54,7 +80,9 @@ export default function AboutSection({
               <span className="stats-section__value">
                 <CountUp value={item.value} suffix={item.suffix} />
               </span>
-              <span className="stats-section__label">{item.label}</span>
+              <span className="stats-section__label">
+                {language === "en" ? item.labelEn || item.label : item.label}
+              </span>
             </li>
           ))}
         </ul>
