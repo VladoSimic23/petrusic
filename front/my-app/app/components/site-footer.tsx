@@ -6,6 +6,7 @@ const links = [
   { label: "Naslovna", href: "/#naslovna" },
   { label: "Stanovi u prodaji", href: "/prodaja-stanova" },
   { label: "Izgrađeni objekti", href: "/izgradeni-objekti" },
+  { label: "Aktualnosti", href: "/aktualnosti" },
   { label: "O nama", href: "/o-nama" },
   { label: "Kontakt", href: "/#kontakt" },
 ];

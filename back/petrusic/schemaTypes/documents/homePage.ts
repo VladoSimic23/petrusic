@@ -41,6 +41,11 @@ export const homePage = defineType({
         }),
     }),
     defineField({
+        name: 'newsSection',
+        title: 'Aktualnosti',
+        type: 'newsSection',
+    }),
+    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'seo',

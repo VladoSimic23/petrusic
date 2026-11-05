@@ -62,6 +62,16 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
+    href: "/aktualnosti",
+    label: { hr: "Aktualnosti", en: "News" },
+    icon: (
+      <svg {...iconProps}>
+        <path d="M5 4.5h14v15H5z" />
+        <path d="M8 8h8M8 11.5h8M8 15h5" />
+      </svg>
+    ),
+  },
+  {
     href: "/o-nama",
     label: { hr: "O nama", en: "About us" },
     icon: (

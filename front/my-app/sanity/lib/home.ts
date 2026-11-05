@@ -6,6 +6,8 @@ import type { ReferencesContent } from "../../app/components/references-section"
 import type { FaqContent } from "../../app/components/faq-section";
 import type { AboutContent } from "../../app/components/about-section";
 import type { ContactContent } from "../../app/components/contact-section";
+import type { NewsSectionContent } from "../../app/components/latest-news-section";
+import type { AktualnostSummary } from "./aktualnosti";
 import { client } from "./client";
 import { HOME_PAGE_QUERY } from "./queries";
 
@@ -18,6 +20,7 @@ export type HomePageData = {
   about?: AboutContent;
   faq?: FaqContent;
   contact?: ContactContent;
+  newsSection?: NewsSectionContent & { articles?: AktualnostSummary[] };
 };
 
 export async function getHomePage(): Promise<HomePageData | null> {
@@ -99,6 +102,71 @@ export async function getHomePage(): Promise<HomePageData | null> {
     about: mapAbout(data.about),
     faq: mapFaq(data.faq),
     contact: mapContact(data.contact),
+    newsSection: data.newsSection
+      ? {
+          eyebrow: data.newsSection.eyebrow ?? undefined,
+          eyebrowEn: data.newsSection.eyebrowEn ?? undefined,
+          title: data.newsSection.title ?? undefined,
+          titleEn: data.newsSection.titleEn ?? undefined,
+          description: data.newsSection.description ?? undefined,
+          descriptionEn: data.newsSection.descriptionEn ?? undefined,
+          viewAllLabel: data.newsSection.viewAllLabel ?? undefined,
+          viewAllLabelEn: data.newsSection.viewAllLabelEn ?? undefined,
+          articles: (data.newsSection.articles ?? []).flatMap((article: {
+            _id: string | null;
+            title: string | null;
+            titleEn: string | null;
+            slug: string | null;
+            publishedAt: string | null;
+            category: string | null;
+            categoryEn: string | null;
+            excerpt: string | null;
+            excerptEn: string | null;
+            readingTime: string | null;
+            readingTimeEn: string | null;
+            image: {
+              src: string | null;
+              alt: string | null;
+              altEn: string | null;
+              hotspot: { x: number | null; y: number | null } | null;
+            } | null;
+          } | null) => {
+            if (
+              !article?._id ||
+              !article.title ||
+              !article.slug ||
+              !article.publishedAt
+            ) {
+              return [];
+            }
+            const image = article.image;
+            return [{
+              _id: article._id,
+              title: article.title,
+              titleEn: article.titleEn ?? undefined,
+              slug: article.slug,
+              publishedAt: article.publishedAt,
+              category: article.category ?? undefined,
+              categoryEn: article.categoryEn ?? undefined,
+              excerpt: article.excerpt ?? undefined,
+              excerptEn: article.excerptEn ?? undefined,
+              readingTime: article.readingTime ?? undefined,
+              readingTimeEn: article.readingTimeEn ?? undefined,
+              image: image?.src
+                ? {
+                    src: image.src,
+                    alt: image.alt ?? undefined,
+                    altEn: image.altEn ?? undefined,
+                    hotspot:
+                      image.hotspot?.x != null && image.hotspot.y != null
+                        ? { x: image.hotspot.x, y: image.hotspot.y }
+                        : undefined,
+                  }
+                : undefined,
+            }];
+          }),
+        }
+      : undefined,
   };
 }
 

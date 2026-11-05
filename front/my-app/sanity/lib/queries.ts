@@ -87,6 +87,35 @@ export const HOME_PAGE_QUERY = defineQuery(`*[_id == "homePage"][0]{
       }
     }
   },
+  "newsSection": newsSection{
+    eyebrow,
+    eyebrowEn,
+    title,
+    titleEn,
+    description,
+    descriptionEn,
+    viewAllLabel,
+    viewAllLabelEn,
+    "articles": articles[]->{
+      _id,
+      title,
+      titleEn,
+      "slug": slug.current,
+      publishedAt,
+      category,
+      categoryEn,
+      excerpt,
+      excerptEn,
+      readingTime,
+      readingTimeEn,
+      "image": mainImage{
+        "src": asset->url,
+        alt,
+        altEn,
+        "hotspot": hotspot{x, y}
+      }
+    }
+  },
   "about": sections[_type == "about"][0]{
     eyebrow,
     title,

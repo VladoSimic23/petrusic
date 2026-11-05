@@ -15,7 +15,7 @@ import {
   getProjectBySlug,
   getProjectsForSale,
 } from "../../../sanity/lib/projects";
-import FirstPersonApartmentWalkthrough from "@/app/components/FirstPersonApartmentWalkthrough";
+//import FirstPersonApartmentWalkthrough from "@/app/components/FirstPersonApartmentWalkthrough";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
