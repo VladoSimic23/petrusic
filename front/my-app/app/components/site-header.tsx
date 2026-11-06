@@ -51,7 +51,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/izgradeni-objekti",
-    label: { hr: "Izgrađeni objekti", en: "Completed projects" },
+    label: { hr: "Arhiva", en: "Archive" },
     icon: (
       <svg {...iconProps}>
         <path d="M4 20V8l6-3v15" />
@@ -141,7 +141,9 @@ export default function SiteHeader() {
         <nav
           className={`primary-nav${isMenuOpen ? " is-open" : ""}`}
           id="primary-navigation"
-          aria-label={language === "en" ? "Main navigation" : "Glavna navigacija"}
+          aria-label={
+            language === "en" ? "Main navigation" : "Glavna navigacija"
+          }
         >
           <ul className="primary-nav__list">
             {NAV_ITEMS.map((item) => {
@@ -156,7 +158,9 @@ export default function SiteHeader() {
                     onClick={closeMenu}
                   >
                     <span className="nav-link__icon">{item.icon}</span>
-                    <span className="nav-link__label">{item.label[language]}</span>
+                    <span className="nav-link__label">
+                      {item.label[language]}
+                    </span>
                     <span className="nav-link__arrow" aria-hidden="true">
                       →
                     </span>

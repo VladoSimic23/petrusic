@@ -15,12 +15,23 @@ export default function CompletedBuildingsIntro({
   const { language } = useLanguage();
   const isEnglish = language === "en";
   const stats = [
-    { value: String(buildingsCount), label: isEnglish ? "completed buildings" : "izgrađenih objekata" },
+    {
+      value: String(buildingsCount),
+      label: isEnglish ? "completed buildings" : "izgrađenih objekata",
+    },
     apartments
-      ? { value: `${apartments}+`, label: isEnglish ? "apartments occupied" : "useljenih stanova" }
+      ? {
+          value: `${apartments}+`,
+          label: isEnglish ? "apartments occupied" : "useljenih stanova",
+        }
       : null,
     latest
-      ? { value: String(latest), label: isEnglish ? "latest completed building" : "posljednji završeni objekt" }
+      ? {
+          value: String(latest),
+          label: isEnglish
+            ? "latest completed building"
+            : "posljednji završeni objekt",
+        }
       : null,
   ].filter((stat) => stat !== null);
 
@@ -40,7 +51,7 @@ export default function CompletedBuildingsIntro({
             fontStyle: "normal",
           }}
         >
-          {isEnglish ? "Completed buildings" : "Izgrađeni objekti"}
+          {isEnglish ? "Archive" : "Arhiva"}
         </h1>
         <p className="sale-page__lead">
           {isEnglish
