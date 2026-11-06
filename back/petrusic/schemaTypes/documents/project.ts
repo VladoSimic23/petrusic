@@ -41,6 +41,109 @@ export const project = defineType({
       rows: 3,
     }),
     defineField({
+      name: 'apartmentCharacteristics',
+      title: 'Stanovi i njihove karakteristike',
+      description:
+        'Dodajte jedan item za svaki stan. Svaki stan ima vlastite podatke i opcionalnu sliku.',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'apartmentCharacteristicsItem',
+          title: 'Stan',
+          fields: [
+            defineField({
+              name: 'apartmentType',
+              title: 'Tip stana',
+              description: 'Npr. Trosoban stan',
+              type: 'string',
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: 'apartmentTypeEn',
+              title: 'Tip stana (English)',
+              type: 'string',
+            }),
+            defineField({
+              name: 'bedrooms',
+              title: 'Broj spavaćih soba',
+              type: 'number',
+              validation: (rule) => rule.integer().min(0),
+            }),
+            defineField({
+              name: 'bathroomsAndWc',
+              title: 'Kupatila i WC',
+              type: 'text',
+              rows: 2,
+            }),
+            defineField({
+              name: 'bathroomsAndWcEn',
+              title: 'Kupatila i WC (English)',
+              type: 'text',
+              rows: 2,
+            }),
+            defineField({
+              name: 'rooms',
+              title: 'Prostorije',
+              description: 'Npr. hodnik, dnevni boravak, kuhinja i balkon.',
+              type: 'text',
+              rows: 3,
+            }),
+            defineField({
+              name: 'roomsEn',
+              title: 'Prostorije (English)',
+              type: 'text',
+              rows: 3,
+            }),
+            defineField({
+              name: 'totalArea',
+              title: 'Ukupna površina (m²)',
+              type: 'number',
+              validation: (rule) => rule.min(0),
+            }),
+            defineField({
+              name: 'location',
+              title: 'Lokacija',
+              type: 'string',
+            }),
+            defineField({
+              name: 'locationEn',
+              title: 'Lokacija (English)',
+              type: 'string',
+            }),
+            defineField({
+              name: 'image',
+              title: 'Slika stana (opcionalno)',
+              type: 'image',
+              options: {hotspot: true},
+              fields: [
+                defineField({
+                  name: 'alt',
+                  title: 'Alternativni tekst',
+                  type: 'string',
+                }),
+                defineField({
+                  name: 'altEn',
+                  title: 'Alternativni tekst (English)',
+                  type: 'string',
+                }),
+              ],
+            }),
+          ],
+          preview: {
+            select: {title: 'apartmentType', subtitle: 'totalArea', media: 'image'},
+            prepare({title, subtitle, media}) {
+              return {
+                title: title || 'Stan',
+                subtitle: subtitle != null ? `${subtitle} m²` : undefined,
+                media,
+              };
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
       name: 'image',
       title: 'Glavna slika',
       type: 'image',

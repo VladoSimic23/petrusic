@@ -7,6 +7,7 @@ import InfoSection from "./components/info-section";
 import LatestNewsSection from "./components/latest-news-section";
 import ProjectsSection from "./components/projects-section";
 import ReferencesSection from "./components/references-section";
+import StandardKvalitetaSection from "./components/standard-kvaliteta-section";
 import {
   aboutContent,
   faqContent,
@@ -31,7 +32,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const [page, aktualnosti] = await Promise.all([getHomePage(), getAktualnosti()]);
+  const [page, aktualnosti] = await Promise.all([
+    getHomePage(),
+    getAktualnosti(),
+  ]);
   const references = page?.references ?? referencesContent;
 
   return (
@@ -45,6 +49,7 @@ export default async function Page() {
           stats={page?.stats ?? statsContent}
         />
         <ReferencesSection {...references} />
+        <StandardKvalitetaSection content={page?.standardKvaliteta} />
         <LatestNewsSection
           content={page?.newsSection}
           items={

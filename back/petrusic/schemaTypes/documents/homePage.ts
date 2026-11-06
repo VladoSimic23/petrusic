@@ -24,6 +24,7 @@ export const homePage = defineType({
         defineArrayMember({type: 'featuredProjects'}),
         defineArrayMember({type: 'completedProjects'}),
         defineArrayMember({type: 'about'}),
+        defineArrayMember({type: 'standardKvaliteta'}),
         defineArrayMember({type: 'faq'}),
         defineArrayMember({type: 'contact'}),
       ],

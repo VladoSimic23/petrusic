@@ -7,6 +7,7 @@ import type { FaqContent } from "../../app/components/faq-section";
 import type { AboutContent } from "../../app/components/about-section";
 import type { ContactContent } from "../../app/components/contact-section";
 import type { NewsSectionContent } from "../../app/components/latest-news-section";
+import type { StandardKvalitetaContent } from "../../app/components/standard-kvaliteta-section";
 import type { AktualnostSummary } from "./aktualnosti";
 import { client } from "./client";
 import { HOME_PAGE_QUERY } from "./queries";
@@ -21,6 +22,7 @@ export type HomePageData = {
   faq?: FaqContent;
   contact?: ContactContent;
   newsSection?: NewsSectionContent & { articles?: AktualnostSummary[] };
+  standardKvaliteta?: StandardKvalitetaContent;
 };
 
 export async function getHomePage(): Promise<HomePageData | null> {
@@ -165,6 +167,41 @@ export async function getHomePage(): Promise<HomePageData | null> {
                 : undefined,
             }];
           }),
+        }
+      : undefined,
+    standardKvaliteta: data.standardKvaliteta?.title
+      ? {
+          eyebrow: data.standardKvaliteta.eyebrow ?? undefined,
+          eyebrowEn: data.standardKvaliteta.eyebrowEn ?? undefined,
+          title: data.standardKvaliteta.title,
+          titleEn: data.standardKvaliteta.titleEn ?? undefined,
+          description: data.standardKvaliteta.description ?? undefined,
+          descriptionEn: data.standardKvaliteta.descriptionEn ?? undefined,
+          standards: (data.standardKvaliteta.standards ?? []).flatMap(
+            (standard: {
+              _id: string | null;
+              number: string | null;
+              title: string | null;
+              titleEn: string | null;
+              description: string | null;
+              descriptionEn: string | null;
+            } | null) =>
+              standard?._id &&
+              standard.number &&
+              standard.title &&
+              standard.description
+                ? [
+                    {
+                      _id: standard._id,
+                      number: standard.number,
+                      title: standard.title,
+                      titleEn: standard.titleEn ?? undefined,
+                      description: standard.description,
+                      descriptionEn: standard.descriptionEn ?? undefined,
+                    },
+                  ]
+                : [],
+          ),
         }
       : undefined,
   };

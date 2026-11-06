@@ -39,9 +39,25 @@ export type ProjectBodyImage = {
   hotspot?: { x: number; y: number };
 };
 
+export type ApartmentCharacteristic = {
+  _key: string;
+  apartmentType?: string;
+  apartmentTypeEn?: string;
+  bedrooms?: number;
+  bathroomsAndWc?: string;
+  bathroomsAndWcEn?: string;
+  rooms?: string;
+  roomsEn?: string;
+  totalArea?: number;
+  location?: string;
+  locationEn?: string;
+  image?: { src: string; alt?: string; altEn?: string };
+};
+
 export type ProjectDetail = ProjectSummary & {
   gallery: (ProjectImage & { _key: string })[];
   body: (PortableTextBlock | ProjectBodyImage)[];
+  apartmentCharacteristics: ApartmentCharacteristic[];
   seo?: { title?: string; description?: string; image?: string };
   english?: ProjectSummary["english"] & {
     description?: string;
@@ -74,6 +90,22 @@ type ProjectListQueryItem = {
 };
 
 type ProjectDetailQuery = ProjectListQueryItem & {
+  apartmentCharacteristics:
+    | ({
+        _key: string | null;
+        apartmentType: string | null;
+        apartmentTypeEn: string | null;
+        bedrooms: number | null;
+        bathroomsAndWc: string | null;
+        bathroomsAndWcEn: string | null;
+        rooms: string | null;
+        roomsEn: string | null;
+        totalArea: number | null;
+        location: string | null;
+        locationEn: string | null;
+        image: { src: string | null; alt: string | null; altEn: string | null } | null;
+      } | null)[]
+    | null;
   english: (NonNullable<ProjectListQueryItem["english"]> & {
     description: string | null;
     body:
@@ -186,6 +218,33 @@ export async function getProjectBySlug(
     const mapped = image(item);
     return item?._key && mapped ? [{ _key: item._key, ...mapped }] : [];
   });
+  const apartmentCharacteristics = (project.apartmentCharacteristics ?? []).flatMap(
+    (item) =>
+      item?._key
+        ? [
+            {
+              _key: item._key,
+              apartmentType: item.apartmentType ?? undefined,
+              apartmentTypeEn: item.apartmentTypeEn ?? undefined,
+              bedrooms: item.bedrooms ?? undefined,
+              bathroomsAndWc: item.bathroomsAndWc ?? undefined,
+              bathroomsAndWcEn: item.bathroomsAndWcEn ?? undefined,
+              rooms: item.rooms ?? undefined,
+              roomsEn: item.roomsEn ?? undefined,
+              totalArea: item.totalArea ?? undefined,
+              location: item.location ?? undefined,
+              locationEn: item.locationEn ?? undefined,
+              image: item.image?.src
+                ? {
+                    src: item.image.src,
+                    alt: item.image.alt ?? undefined,
+                    altEn: item.image.altEn ?? undefined,
+                  }
+                : undefined,
+            },
+          ]
+        : [],
+  );
   const body: ProjectDetail["body"] = [];
   const englishBody: NonNullable<ProjectDetail["english"]>["body"] = [];
   for (const block of project.body ?? []) {
@@ -232,6 +291,7 @@ export async function getProjectBySlug(
     image: image(project.image)!,
     gallery,
     body,
+    apartmentCharacteristics,
     english: project.english
       ? {
           title: project.english.title ?? undefined,

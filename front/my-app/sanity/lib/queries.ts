@@ -136,6 +136,23 @@ export const HOME_PAGE_QUERY = defineQuery(`*[_id == "homePage"][0]{
       cta{label, href}
     }
   },
+  "standardKvaliteta": sections[_type == "standardKvaliteta"][0]{
+    eyebrow,
+    eyebrowEn,
+    title,
+    titleEn,
+    description,
+    descriptionEn,
+    "standards": standards[]->{
+      _id,
+      number,
+      title,
+      titleEn,
+      description,
+      descriptionEn,
+      order
+    }
+  },
   "faq": sections[_type == "faq"][0]{
     eyebrow,
     eyebrowEn,
@@ -227,6 +244,24 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(`*[
     englishAlt,
     englishCaption,
     "hotspot": hotspot{x, y}
+  },
+  "apartmentCharacteristics": apartmentCharacteristics[]{
+    _key,
+    apartmentType,
+    apartmentTypeEn,
+    bedrooms,
+    bathroomsAndWc,
+    bathroomsAndWcEn,
+    rooms,
+    roomsEn,
+    totalArea,
+    location,
+    locationEn,
+    "image": image{
+      "src": asset->url,
+      alt,
+      altEn
+    }
   },
   body[]{
     ...,

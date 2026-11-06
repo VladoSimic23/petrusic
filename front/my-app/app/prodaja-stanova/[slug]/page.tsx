@@ -9,6 +9,7 @@ import {
   ProjectText,
 } from "../../components/project-localization";
 import SaleProjectCard from "../../components/sale-project-card";
+import ApartmentCharacteristics from "../../components/apartment-characteristics";
 import { messagingNumber, phoneHref } from "../../components/contact-utils";
 import { getHomePage } from "../../../sanity/lib/home";
 import {
@@ -182,6 +183,14 @@ async function ProjectDetailContent({ params }: PageProps) {
           </ul>
         </section>
       </div>
+
+      {project.apartmentCharacteristics.length ? (
+        <ApartmentCharacteristics
+          apartments={project.apartmentCharacteristics}
+          projectTitle={project.title}
+          englishProjectTitle={project.english?.title}
+        />
+      ) : null}
 
       {/* <div className="project-detail__wrap">
         <dl className="project-detail__facts">

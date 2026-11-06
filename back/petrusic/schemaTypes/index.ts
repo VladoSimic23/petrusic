@@ -5,6 +5,7 @@ import {about} from './blocks/about'
 import {faq} from './blocks/faq'
 import {contact} from './blocks/contact'
 import {newsSection} from './blocks/newsSection'
+import {standardKvaliteta, standardSchema} from './blocks/standardKvaliteta'
 import {stats} from './blocks/stats'
 import {homePage} from './documents/homePage'
 import {aboutPage} from './documents/aboutPage'
@@ -20,6 +21,7 @@ export const schemaTypes = [
   project,
   aktualnostSchema,
   completedBuilding,
+  standardSchema,
   hero,
   stats,
   featuredProjects,
@@ -28,6 +30,7 @@ export const schemaTypes = [
   faq,
   contact,
   newsSection,
+  standardKvaliteta,
   callToAction,
   seo,
 ]
