@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { ApartmentCharacteristic } from "../../sanity/lib/projects";
 import { useLanguage } from "./language-provider";
 
@@ -19,6 +20,7 @@ export default function ApartmentCharacteristics({
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isImageOpen, setIsImageOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const imageDialogRef = useRef<HTMLDialogElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const imageCloseRef = useRef<HTMLButtonElement>(null);
   const imageTriggerRef = useRef<HTMLButtonElement>(null);
@@ -32,6 +34,17 @@ export default function ApartmentCharacteristics({
 
   useEffect(() => {
     imageOpenRef.current = isImageOpen;
+  }, [isImageOpen]);
+
+  useEffect(() => {
+    const dialog = imageDialogRef.current;
+    if (!dialog || !isImageOpen) return;
+
+    dialog.showModal();
+    imageCloseRef.current?.focus();
+    return () => {
+      if (dialog.open) dialog.close();
+    };
   }, [isImageOpen]);
 
   useEffect(() => {
@@ -300,22 +313,20 @@ export default function ApartmentCharacteristics({
               </button>
             </footer>
           ) : null}
-          {activeApartment.image ? (
-            isImageOpen ? (
-            <div
+        </dialog>
+      ) : null}
+      {activeApartment?.image && isImageOpen
+        ? createPortal(
+            <dialog
               className="apartment-image-dialog"
-              role="dialog"
-              aria-modal="true"
+              ref={imageDialogRef}
               aria-label={labels.enlargeImage}
               onClick={(event) => {
                 if (event.target === event.currentTarget) setIsImageOpen(false);
               }}
-              onKeyDown={(event) => {
-                if (event.key === "Escape") {
+              onCancel={(event) => {
                   event.preventDefault();
-                  event.stopPropagation();
                   setIsImageOpen(false);
-                }
               }}
             >
               <button
@@ -343,11 +354,10 @@ export default function ApartmentCharacteristics({
                   priority
                 />
               </div>
-            </div>
-            ) : null
-          ) : null}
-        </dialog>
-      ) : null}
+            </dialog>,
+            document.body,
+          )
+        : null}
     </section>
   );
 }
