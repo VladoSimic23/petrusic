@@ -155,7 +155,7 @@ async function ProjectDetailContent({ params }: PageProps) {
       </section>
 
       <div className="about-page">
-        <section className="about-stats">
+        {/* <section className="about-stats">
           <ul>
             <li>
               <strong style={{ fontSize: "24px", paddingBottom: "8px" }}>
@@ -181,7 +181,7 @@ async function ProjectDetailContent({ params }: PageProps) {
               </span>
             </li>
           </ul>
-        </section>
+        </section> */}
       </div>
 
       {project.apartmentCharacteristics.length ? (
@@ -216,7 +216,12 @@ async function ProjectDetailContent({ params }: PageProps) {
       </div> */}
 
       {gallery.length > 1 ? (
-        <ProjectGallery images={gallery} title={project.title} />
+        <ProjectGallery
+          images={gallery}
+          title={project.title}
+          englishTitle={project.english?.title}
+          showDesktopLightboxArrows
+        />
       ) : null}
       {/* {project.slug === "stambeno-poslovna-zgrada-centar" ? (
         <FirstPersonApartmentWalkthrough />

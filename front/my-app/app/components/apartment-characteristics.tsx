@@ -97,8 +97,12 @@ export default function ApartmentCharacteristics({
         enlargeImage: "Click to view full size",
         previous: "Previous apartment",
         next: "Next apartment",
+        available: "apartment types",
         bedroom: "bedroom",
         bedroomsPlural: "bedrooms",
+        cardType: "Type",
+        availabilityAvailable: "Available",
+        availabilityUnavailable: "Unavailable",
       }
     : {
         eyebrow: "Ponuda stanova",
@@ -113,8 +117,12 @@ export default function ApartmentCharacteristics({
         enlargeImage: "Kliknite za prikaz pune veličine",
         previous: "Prethodni stan",
         next: "Sljedeći stan",
+        available: "tipova stanova",
         bedroom: "spavaća soba",
         bedroomsPlural: "spavaćih soba",
+        cardType: "Tip",
+        availabilityAvailable: "Dostupno",
+        availabilityUnavailable: "Nedostupno",
       };
 
   const apartmentType = (apartment: ApartmentCharacteristic) =>
@@ -127,14 +135,20 @@ export default function ApartmentCharacteristics({
     <section className="apartment-options" aria-labelledby="apartment-options-title">
       <div className="project-detail__wrap">
         <header className="apartment-options__heading">
-          <p className="eyebrow eyebrow--dark">{labels.eyebrow}</p>
-          <h2 id="apartment-options-title">{labels.title}</h2>
-          <p>
-            {displayProjectTitle}
-            {isEnglish
-              ? " — explore the available apartment options."
-              : " — pregledajte dostupne opcije stanova."}
-          </p>
+          <div className="apartment-options__heading-copy">
+            <p className="eyebrow eyebrow--dark">{labels.eyebrow}</p>
+            <h2 id="apartment-options-title">{labels.title}</h2>
+            <p>
+              {displayProjectTitle}
+              {isEnglish
+                ? " — explore the available apartment options."
+                : " — pregledajte dostupne opcije stanova."}
+            </p>
+          </div>
+          <div className="apartment-options__summary" aria-label={`${apartments.length} ${labels.available}`}>
+            <span>{String(apartments.length).padStart(2, "0")}</span>
+            <span>{labels.available}</span>
+          </div>
         </header>
 
         <ul className="apartment-options__grid">
@@ -145,17 +159,41 @@ export default function ApartmentCharacteristics({
                 type="button"
                 onClick={() => setActiveIndex(index)}
                 aria-haspopup="dialog"
-                aria-label={`${isEnglish ? "Type" : "Tip"} ${index + 1}${apartmentType(apartment) ? `: ${apartmentType(apartment)}` : ""}`}
+                aria-label={`${apartment.availability === "available" ? labels.availabilityAvailable : labels.availabilityUnavailable}. ${isEnglish ? "Type" : "Tip"} ${index + 1}${apartmentType(apartment) ? `: ${apartmentType(apartment)}` : ""}${apartment.totalArea != null ? `, ${labels.area}: ${apartment.totalArea} m²` : ""}${apartment.bedrooms != null ? `, ${labels.bedrooms}: ${apartment.bedrooms}` : ""}`}
               >
-                <span className="apartment-option__number">
+                <span className="apartment-option__topline">
+                  <span className="apartment-option__type-label">
+                    {labels.cardType} {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="apartment-option__arrow" aria-hidden="true">
+                    ↗
+                  </span>
+                </span>
+                <span className="apartment-option__center-number" aria-hidden="true">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <span className="apartment-option__label">
-                  {isEnglish ? "Type" : "Tip"} {index + 1}
+                <span
+                  className={`apartment-option__availability${apartment.availability === "unavailable" ? " apartment-option__availability--unavailable" : ""}`}
+                >
+                  {apartment.availability === "available"
+                    ? labels.availabilityAvailable
+                    : labels.availabilityUnavailable}
                 </span>
-                <span className="apartment-option__arrow" aria-hidden="true">
-                  ↗
-                </span>
+                {apartment.totalArea != null || apartment.bedrooms != null ? (
+                  <span className="apartment-option__details">
+                    {apartment.totalArea != null ? (
+                      <span>{apartment.totalArea} m²</span>
+                    ) : null}
+                    {apartment.bedrooms != null ? (
+                      <span>
+                        {apartment.bedrooms}{" "}
+                        {apartment.bedrooms === 1
+                          ? labels.bedroom
+                          : labels.bedroomsPlural}
+                      </span>
+                    ) : null}
+                  </span>
+                ) : null}
               </button>
             </li>
           ))}

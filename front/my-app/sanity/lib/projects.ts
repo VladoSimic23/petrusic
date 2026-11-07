@@ -39,10 +39,17 @@ export type ProjectBodyImage = {
   hotspot?: { x: number; y: number };
 };
 
+export type ApartmentAvailability = "available" | "unavailable";
+
+const normalizeApartmentAvailability = (
+  availability: ApartmentAvailability | null,
+): ApartmentAvailability => (availability === "unavailable" ? "unavailable" : "available");
+
 export type ApartmentCharacteristic = {
   _key: string;
   apartmentType?: string;
   apartmentTypeEn?: string;
+  availability: ApartmentAvailability;
   bedrooms?: number;
   bathroomsAndWc?: string;
   bathroomsAndWcEn?: string;
@@ -95,6 +102,7 @@ type ProjectDetailQuery = ProjectListQueryItem & {
         _key: string | null;
         apartmentType: string | null;
         apartmentTypeEn: string | null;
+        availability: ApartmentAvailability | null;
         bedrooms: number | null;
         bathroomsAndWc: string | null;
         bathroomsAndWcEn: string | null;
@@ -226,6 +234,7 @@ export async function getProjectBySlug(
               _key: item._key,
               apartmentType: item.apartmentType ?? undefined,
               apartmentTypeEn: item.apartmentTypeEn ?? undefined,
+              availability: normalizeApartmentAvailability(item.availability),
               bedrooms: item.bedrooms ?? undefined,
               bathroomsAndWc: item.bathroomsAndWc ?? undefined,
               bathroomsAndWcEn: item.bathroomsAndWcEn ?? undefined,

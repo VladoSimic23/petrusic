@@ -30,10 +30,12 @@ export default function ProjectGallery({
   images,
   title,
   englishTitle,
+  showDesktopLightboxArrows = false,
 }: {
   images: GalleryImage[];
   title: string;
   englishTitle?: string;
+  showDesktopLightboxArrows?: boolean;
 }) {
   const railRef = useRef<HTMLUListElement>(null);
   const thumbRef = useRef<HTMLSpanElement>(null);
@@ -263,6 +265,26 @@ export default function ProjectGallery({
           >
             <span aria-hidden="true">×</span>
           </button>
+          {showDesktopLightboxArrows && count > 1 ? (
+            <>
+              <button
+                type="button"
+                className="project-lightbox__arrow project-lightbox__arrow--previous"
+                aria-label={isEnglish ? "Previous photo" : "Prethodna fotografija"}
+                onClick={() => step(-1)}
+              >
+                <span aria-hidden="true">←</span>
+              </button>
+              <button
+                type="button"
+                className="project-lightbox__arrow project-lightbox__arrow--next"
+                aria-label={isEnglish ? "Next photo" : "Sljedeća fotografija"}
+                onClick={() => step(1)}
+              >
+                <span aria-hidden="true">→</span>
+              </button>
+            </>
+          ) : null}
           <div className="project-lightbox__image" key={activeImage._key}>
             <Image
               src={activeImage.src}

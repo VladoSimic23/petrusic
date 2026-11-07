@@ -96,7 +96,7 @@ export default function SiteHeader() {
       : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
   return (
-    <header className="site-header">
+    <header className="site-header" id="page-top">
       <span className="site-header__ornament" aria-hidden="true" />
       <div className="site-header__inner">
         <Link

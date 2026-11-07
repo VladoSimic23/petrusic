@@ -249,6 +249,7 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(`*[
     _key,
     apartmentType,
     apartmentTypeEn,
+    availability,
     bedrooms,
     bathroomsAndWc,
     bathroomsAndWcEn,

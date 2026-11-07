@@ -65,6 +65,21 @@ export const project = defineType({
               type: 'string',
             }),
             defineField({
+              name: 'availability',
+              title: 'Dostupnost',
+              description: 'Odaberite je li stan dostupan za kupnju.',
+              type: 'string',
+              options: {
+                list: [
+                  {title: 'Dostupno', value: 'available'},
+                  {title: 'Nedostupno', value: 'unavailable'},
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'available',
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
               name: 'bedrooms',
               title: 'Broj spavaćih soba',
               type: 'number',

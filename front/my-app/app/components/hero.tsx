@@ -103,7 +103,7 @@ export default function Hero({
         )}
       </div>
 
-      {/* {hasFooter && (
+      {hasFooter && (
         <div className="hero__footer">
           {stat?.value && (
             <div className="hero__stat">
@@ -122,7 +122,7 @@ export default function Hero({
             </a>
           )}
         </div>
-      )} */}
+      )}
     </section>
   );
 }
