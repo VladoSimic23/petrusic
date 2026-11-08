@@ -177,7 +177,10 @@ export const heroContent: HeroContent = {
   backgroundImage: { src: "/images/hero.webp", alt: "" },
   stat: { value: "30", label: "godina iskustva" },
   footerNote: "Gradimo promišljeno. Živimo kvalitetnije.",
-  scrollLink: { label: "Otkrijte više", href: "#projekti" },
+  scrollLink: { label: "Istražite projekte", href: "#projekti" },
+  english: {
+    scrollLink: { label: "Explore projects", href: "#projekti" },
+  },
 };
 
 export const infoSections = [

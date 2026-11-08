@@ -4,7 +4,7 @@ import { useLanguage } from "./language-provider";
 
 export default function BackToTop() {
   const { language } = useLanguage();
-  const label = language === "en" ? "Top" : "Na vrh";
+  const label = language === "en" ? "To top" : "Na vrh";
 
   return (
     <button

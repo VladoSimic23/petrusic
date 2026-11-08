@@ -279,5 +279,15 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(`*[
     title,
     description,
     "image": image.asset->url
+  },
+  "faq": faq{
+    eyebrow,
+    eyebrowEn,
+    title,
+    titleEn,
+    description,
+    descriptionEn,
+    "items": items[]{_key, question, answer, questionEn, answerEn},
+    cta{text, textEn, link{label, href}, linkLabelEn}
   }
 }`);

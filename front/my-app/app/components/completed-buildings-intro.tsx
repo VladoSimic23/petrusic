@@ -60,7 +60,7 @@ export default function CompletedBuildingsIntro({
         </p>
       </header>
 
-      {stats.length > 1 ? (
+      {/* {stats.length > 1 ? (
         <div
           className="about-page"
           style={{ marginTop: "50px", marginBottom: "50px" }}
@@ -80,7 +80,7 @@ export default function CompletedBuildingsIntro({
             </ul>
           </section>
         </div>
-      ) : null}
+      ) : null} */}
     </>
   );
 }

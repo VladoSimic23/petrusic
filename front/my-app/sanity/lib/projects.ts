@@ -1,6 +1,8 @@
 import { cacheLife, cacheTag } from "next/cache";
 import type { PortableTextBlock } from "@portabletext/types";
+import type { FaqContent } from "../../app/components/faq-section";
 import { client } from "./client";
+import { mapFaq, type FaqQueryData } from "./faq";
 import {
   PROJECTS_FOR_SALE_QUERY,
   PROJECT_BY_SLUG_QUERY,
@@ -65,6 +67,7 @@ export type ProjectDetail = ProjectSummary & {
   gallery: (ProjectImage & { _key: string })[];
   body: (PortableTextBlock | ProjectBodyImage)[];
   apartmentCharacteristics: ApartmentCharacteristic[];
+  faq?: FaqContent;
   seo?: { title?: string; description?: string; image?: string };
   english?: ProjectSummary["english"] & {
     description?: string;
@@ -135,6 +138,7 @@ type ProjectDetailQuery = ProjectListQueryItem & {
   seo:
     | { title: string | null; description: string | null; image: string | null }
     | null;
+  faq: FaqQueryData;
 };
 
 export async function getProjectsForSale(): Promise<ProjectSummary[]> {
@@ -301,6 +305,7 @@ export async function getProjectBySlug(
     gallery,
     body,
     apartmentCharacteristics,
+    faq: mapFaq(project.faq),
     english: project.english
       ? {
           title: project.english.title ?? undefined,

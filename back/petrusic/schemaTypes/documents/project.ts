@@ -331,6 +331,12 @@ export const project = defineType({
       ],
     }),
     defineField({
+      name: 'faq',
+      title: 'Česta pitanja (FAQ)',
+      description: 'Pitanja i odgovori prikazuju se na dnu stranice projekta.',
+      type: 'faq',
+    }),
+    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'seo',

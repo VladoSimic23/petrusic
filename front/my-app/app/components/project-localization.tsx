@@ -14,16 +14,41 @@ export function ProjectText({
   croatian,
   english,
   element: Element = "span",
+  typewriter = false,
   ...props
 }: {
   croatian: string;
   english: string;
   element?: TextElement;
+  typewriter?: boolean;
 } & Pick<ComponentProps<"span">, "className" | "id">) {
   const { language } = useLanguage();
+  const text = language === "en" && english ? english : croatian;
+
   return (
-    <Element {...props}>
-      {language === "en" && english ? english : croatian}
+    <Element
+      {...props}
+      className={
+        typewriter
+          ? [props.className, "project-detail__typing"].filter(Boolean).join(" ")
+          : props.className
+      }
+      aria-label={typewriter ? text : undefined}
+    >
+      {typewriter ? (
+        <span className="project-detail__typing-text" aria-hidden="true" key={text}>
+          {Array.from(text).map((character, index) => (
+            <span
+              key={`${index}-${character}`}
+              style={{ animationDelay: `${index * 45}ms` }}
+            >
+              {character}
+            </span>
+          ))}
+        </span>
+      ) : (
+        text
+      )}
     </Element>
   );
 }

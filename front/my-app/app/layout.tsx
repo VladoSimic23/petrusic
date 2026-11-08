@@ -23,8 +23,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <SiteHeader />
           {children}
           <ContactSection {...(homePage?.contact ?? contactContent)} />
+          <SiteFooter />
         </LanguageProvider>
-        <SiteFooter />
       </body>
     </html>
   );

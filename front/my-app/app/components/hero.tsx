@@ -37,7 +37,6 @@ export default function Hero({
   backgroundImage,
   stat,
   footerNote,
-  scrollLink,
   english,
 }: HeroContent) {
   const { language } = useLanguage();
@@ -49,8 +48,7 @@ export default function Hero({
   primaryCta = translated?.primaryCta || primaryCta;
   stat = translated?.stat || stat;
   footerNote = translated?.footerNote || footerNote;
-  scrollLink = translated?.scrollLink || scrollLink;
-  const hasFooter = stat?.value || footerNote || scrollLink;
+  const hasFooter = stat?.value || footerNote;
 
   return (
     <section className="hero" id="naslovna" aria-labelledby="hero-title">
@@ -116,11 +114,10 @@ export default function Hero({
           {footerNote && (
             <span className="hero__footer-note">{footerNote}</span>
           )}
-          {scrollLink && (
-            <a className="hero__scroll" href={scrollLink.href}>
-              {scrollLink.label} <span aria-hidden="true">↓</span>
-            </a>
-          )}
+          {/* <div className="hero__scroll-cue" aria-hidden="true">
+            <span className="hero__scroll-cue-icon">↓</span>
+            <span className="hero__scroll-cue-line" />
+          </div> */}
         </div>
       )}
     </section>

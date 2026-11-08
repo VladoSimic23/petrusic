@@ -10,6 +10,7 @@ import {
 } from "../../components/project-localization";
 import SaleProjectCard from "../../components/sale-project-card";
 import ApartmentCharacteristics from "../../components/apartment-characteristics";
+import FaqSection from "../../components/faq-section";
 import { messagingNumber, phoneHref } from "../../components/contact-utils";
 import { getHomePage } from "../../../sanity/lib/home";
 import {
@@ -325,6 +326,7 @@ async function ProjectDetailContent({ params }: PageProps) {
           </ul>
         </section>
       ) : null}
+      {project.faq ? <FaqSection {...project.faq} /> : null}
     </main>
   );
 }

@@ -69,7 +69,7 @@ export const hero = defineType({
     defineField({
       name: 'scrollLink',
       title: 'Poveznica za pomicanje',
-      description: 'Npr. "Otkrijte više" koja vodi na sljedeću sekciju.',
+      description: 'Tekst poveznice koja vodi na sljedeću sekciju, npr. "Istražite projekte".',
       type: 'callToAction',
     }),
     defineField({
