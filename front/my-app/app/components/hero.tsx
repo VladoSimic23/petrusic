@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useLanguage } from "./language-provider";
 
 export type CallToAction = {
@@ -94,10 +95,10 @@ export default function Hero({
         </h1>
         {description && <p className="hero__description">{description}</p>}
         {primaryCta && (
-          <a className="button button--primary" href={primaryCta.href}>
+          <Link className="button button--primary" href={primaryCta.href}>
             {primaryCta.label}
             <span aria-hidden="true">↗</span>
-          </a>
+          </Link>
         )}
       </div>
 
