@@ -41,6 +41,7 @@ export default async function Page() {
   return (
     <>
       <main>
+        <p>Welcome to our homepage!</p>
         <HomepageMotion />
         <Hero {...(page?.hero ?? heroContent)} />
         <ProjectsSection {...(page?.projects ?? projectsContent)} />
